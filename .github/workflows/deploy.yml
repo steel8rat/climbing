@@ -67,11 +67,8 @@ jobs:
         run: ls -R
         working-directory: build/libs
 
-      - name: Docker Login
-        env:
-          DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
-          DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
-        run: docker login -u $DOCKER_USERNAME -p $DOCKER_PASSWORD
+      - name: Login to DockerHub Registry
+        run: echo ${{ secrets.DOCKERHUB_PASSWORD }} | docker login -u ${{ secrets.DOCKERHUB_USERNAME }} --password-stdin
 
       - name: Build Docker image
         run: docker build --build-arg JAR_FILE=build/libs/*.jar --file Dockerfile --tag $IMAGE_NAME:latest .
