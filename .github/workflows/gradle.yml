@@ -10,7 +10,7 @@ on:
     branches: [ master ]
 
 jobs:
-  build:
+  build_and_test:
 
     runs-on: ubuntu-latest
 
@@ -35,3 +35,20 @@ jobs:
       with:
         name: Package
         path: build/libs
+
+  build_docker_image:
+
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v2
+      - name: Login to DockerHub Registry
+        run: echo ${{ secrets.DOCKERHUB_PASSWORD }} | docker login -u ${{ secrets.DOCKERHUB_USERNAME }} --password-stdin
+      - name: Build Docker image
+        uses: actions/docker/cli@master
+        run: docker build . --file Dockerfile --tag steel8rat/image-search:latest
+      - name: Push image to Dockerhub
+        run: docker push steel8rat/image-search:latest
+
+
+
