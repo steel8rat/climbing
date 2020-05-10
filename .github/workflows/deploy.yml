@@ -1,19 +1,11 @@
 # This workflow will build a Java project with Gradle
 # For more information see: https://help.github.com/actions/language-and-framework-guides/building-and-testing-java-with-gradle
 
-name: image-search build
+name: Deploy to Digital Ocean
 
 on:
   push:
     # Publish `master` as Docker `latest` image.
-    branches:
-      - master
-
-    # Publish `v1.2.3` tags as releases.
-    tags:
-      - v*
-
-  pull_request:
     branches:
       - master
 
@@ -57,13 +49,16 @@ jobs:
     steps:
       - uses: actions/checkout@v2
 
+      - name: Update SHA
+        run: echo $GITHUB_SHA > $GITHUB_WORKSPACE/site/_meta
+
       - name: Download artifacts
         uses: actions/download-artifact@v2
         with:
           name: Package
           path: build/libs
 
-      - name: Display structure of downloaded files
+      - name: Downloaded files
         run: ls -R
         working-directory: build/libs
 
@@ -71,21 +66,28 @@ jobs:
         run: echo ${{ secrets.DOCKERHUB_PASSWORD }} | docker login -u ${{ secrets.DOCKERHUB_USERNAME }} --password-stdin
 
       - name: Build Docker image
-        run: docker build --build-arg JAR_FILE=build/libs/*.jar --file Dockerfile --tag $IMAGE_NAME:latest .
+        run: docker build --build-arg JAR_FILE=build/libs/*.jar --file Dockerfile --tag $IMAGE_NAME:$(echo $GITHUB_SHA | head -c7) .
 
       - name: Push image to Dockerhub
-        run: docker push $IMAGE_NAME:latest
+        run: docker push $IMAGE_NAME
 
-#  deploy_to_do:
-#    needs: build_docker_image
-#    runs-on: ubuntu-latest
-#    steps:
-#      - uses: actions/checkout@v2
-#
-#      - name: Install doctl
-#        uses: digitalocean/action-doctl@v2
-#        with:
-#          token: ${{ secrets.DIGITALOCEAN_ACCESS_TOKEN }}
-#
-#      - name: Save DigitalOcean kubeconfig
-#          run: doctl kubernetes cluster kubeconfig save image-search
+  deploy_to_do:
+    needs: build_docker_image
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout master
+        uses: actions/checkout@v2
+
+      - name: Update SHA
+        run: echo $GITHUB_SHA > $GITHUB_WORKSPACE/site/_meta
+
+      - name: Update deployment file
+        run: TAG=$(echo $GITHUB_SHA | head -c7) && sed -i 's|<IMAGE>|andrewsomething/static-example:'${TAG}'|' $GITHUB_WORKSPACE/config/deployment.yml
+
+      - name: Install doctl
+        uses: digitalocean/action-doctl@v2
+        with:
+          token: ${{ secrets.DIGITALOCEAN_ACCESS_TOKEN }}
+
+      - name: Save DigitalOcean kubeconfig
+          run: doctl kubernetes cluster kubeconfig save image-search
