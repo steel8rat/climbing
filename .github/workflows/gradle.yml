@@ -43,6 +43,14 @@ jobs:
 
     steps:
       - uses: actions/checkout@v2
+      - name: Download artifacts
+        uses: actions/download-artifact@v2
+        with:
+          name: Package
+          path: build/libs
+      - name: Display structure of downloaded files
+        run: ls -R
+        working-directory: build/libs
       - name: Login to DockerHub Registry
         run: echo ${{ secrets.DOCKERHUB_PASSWORD }} | docker login -u ${{ secrets.DOCKERHUB_USERNAME }} --password-stdin
       - name: Build Docker image
