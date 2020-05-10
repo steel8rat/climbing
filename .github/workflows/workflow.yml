@@ -15,7 +15,7 @@ env:
   # take commit sha as a image tag
   IMAGE_TAG: ${{ github.sha }}
   KUBERNETIS_CLUSTER_NAME: k8s-dev
-  JAVA_VERSION: 14
+  JAVA_VERSION: openjdk@1.14
 
 jobs:
   build_and_test:
