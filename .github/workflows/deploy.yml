@@ -76,9 +76,6 @@ jobs:
       - name: Checkout master
         uses: actions/checkout@v2
 
-      - name: Update SHA
-        run: echo $GITHUB_SHA > $GITHUB_WORKSPACE/site/_meta
-
       - name: Update deployment file
         run: sed -i 's|<IMAGE>|'${IMAGE_NAME}':'${IMAGE_TAG}'|' $GITHUB_WORKSPACE/config/deployment.yml
 
