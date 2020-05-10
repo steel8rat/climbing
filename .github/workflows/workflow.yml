@@ -20,6 +20,7 @@ jobs:
       - name: Dump GITHUB_SHA
         env:
           GITHUB_SHA: ${{ github.sha }}
+        run: echo "$GITHUB_SHA"
 
       - name: Dump GITHUB_SHA
         run: echo $GITHUB_SHA
