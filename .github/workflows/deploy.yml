@@ -47,7 +47,7 @@ jobs:
     needs: build_and_test
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@master
 
       - name: Update SHA
         run: echo $GITHUB_SHA > $GITHUB_WORKSPACE/site/_meta
