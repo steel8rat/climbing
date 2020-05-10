@@ -18,8 +18,8 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Dump GITHUB_SHA
-          env:
-            GITHUB_SHA: ${{ github.sha }}
+        env:
+          GITHUB_SHA: ${{ github.sha }}
 
       - name: Dump GITHUB_SHA
         run: echo $GITHUB_SHA
