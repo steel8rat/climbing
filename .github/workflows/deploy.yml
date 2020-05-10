@@ -12,7 +12,7 @@ on:
 env:
   # Image's name.
   IMAGE_NAME: steel8rat/image-search
-  IMAGE_TAG: ${{ date +%s }}
+  IMAGE_TAG: v001
 
 jobs:
   build_and_test:
