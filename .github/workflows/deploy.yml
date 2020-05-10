@@ -12,6 +12,7 @@ on:
 env:
   # Image's name.
   IMAGE_NAME: steel8rat/image-search
+  IMAGE_TAG: ${{ date +%s }}
 
 jobs:
   build_and_test:
@@ -38,7 +39,7 @@ jobs:
         run: ./gradlew build
 
       - name: Upload artifacts
-        uses: actions/upload-artifact@v1
+        uses: actions/upload-artifact@v2
         with:
           name: Package
           path: build/libs
@@ -47,10 +48,7 @@ jobs:
     needs: build_and_test
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@master
-
-      - name: Update SHA
-        run: echo $GITHUB_SHA > $GITHUB_WORKSPACE/site/_meta
+      - uses: actions/checkout@v2
 
       - name: Download artifacts
         uses: actions/download-artifact@v2
@@ -66,7 +64,7 @@ jobs:
         run: echo ${{ secrets.DOCKERHUB_PASSWORD }} | docker login -u ${{ secrets.DOCKERHUB_USERNAME }} --password-stdin
 
       - name: Build Docker image
-        run: docker build --build-arg JAR_FILE=build/libs/*.jar --file Dockerfile --tag $IMAGE_NAME:$(echo $GITHUB_SHA | head -c7) .
+        run: docker build --build-arg JAR_FILE=build/libs/*.jar --file Dockerfile --tag $IMAGE_NAME:$IMAGE_TAG .
 
       - name: Push image to Dockerhub
         run: docker push $IMAGE_NAME
@@ -76,13 +74,13 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout master
-        uses: actions/checkout@master
+        uses: actions/checkout@v2
 
       - name: Update SHA
         run: echo $GITHUB_SHA > $GITHUB_WORKSPACE/site/_meta
 
       - name: Update deployment file
-        run: TAG=$(echo $GITHUB_SHA | head -c7) && sed -i 's|<IMAGE>|andrewsomething/static-example:'${TAG}'|' $GITHUB_WORKSPACE/config/deployment.yml
+        run: sed -i 's|<IMAGE>|'${IMAGE_NAME}':'${IMAGE_TAG}'|' $GITHUB_WORKSPACE/config/deployment.yml
 
       - name: Install doctl
         uses: digitalocean/action-doctl@v2
