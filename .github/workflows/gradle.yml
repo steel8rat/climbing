@@ -45,7 +45,7 @@ jobs:
       - name: Login to DockerHub Registry
         run: echo ${{ secrets.DOCKERHUB_PASSWORD }} | docker login -u ${{ secrets.DOCKERHUB_USERNAME }} --password-stdin
       - name: Build Docker image
-        run: docker build . --file Dockerfile --tag steel8rat/image-search:latest
+        run: docker build --build-arg JAR_FILE=build/libs/*.jar --file Dockerfile --tag steel8rat/image-search:latest .
       - name: Push image to Dockerhub
         run: docker push steel8rat/image-search:latest
 
