@@ -1,4 +1,4 @@
-FROM openjdk:8-jre-alpine
+FROM openjdk:14-jdk-alpine
 RUN apk --no-cache add curl
 RUN addgroup -S spring && adduser -S spring -G spring
 USER spring:spring
