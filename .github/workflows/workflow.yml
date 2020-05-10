@@ -12,13 +12,20 @@ on:
 env:
   # Image's name.
   IMAGE_NAME: steel8rat/image-search
-  TIME: ${{ github.sh }}
+  TIME: ${{ github.sha }}
 jobs:
   build_and_test:
     runs-on: ubuntu-latest
     steps:
-      - name: Dump GitHub context
-        run: echo "$TIME"
+      - name: Dump GITHUB_SHA
+          env:
+            GITHUB_SHA: ${{ github.sha }}
+
+      - name: Dump GITHUB_SHA
+        run: echo $GITHUB_SHA
+
+      - name: Dump ${{ github.sha }}
+        run: echo ${{ github.sha }}
 
       - uses: actions/checkout@v2
 
