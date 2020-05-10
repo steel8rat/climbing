@@ -33,10 +33,8 @@ metadata:
   labels:
     name: image-search-service
 spec:
-  type: NodePort
   ports:
     - port: 8080
-      nodePort: 32377
-      name: http
+      protocol: TCP
   selector:
-    name: image-search-service
+    run: image-search
