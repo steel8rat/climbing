@@ -1,11 +1,11 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: image-search-deployment
+  name: image-search
   labels:
     app: image-search
 spec:
-  replicas: 2
+  replicas: 1
   selector:
     matchLabels:
       app: image-search
@@ -19,6 +19,7 @@ spec:
           image: <IMAGE>
           ports:
             - containerPort: 8080
+              protocol: TCP
 ---
 apiVersion: v1
 kind: Service
@@ -29,10 +30,10 @@ metadata:
 spec:
   type: NodePort
   selector:
-    run: image-search
+    app: image-search
   ports:
     - port: 8080
       targetPort: 8080
       protocol: TCP
-      nodePort: 30007
+
 

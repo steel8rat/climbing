@@ -12,12 +12,12 @@ on:
 env:
   # Image's name.
   IMAGE_NAME: steel8rat/image-search
-  IMAGE_TAG: 0.0.1
-
+  TIME: ${{ github.sh }}
 jobs:
   build_and_test:
     runs-on: ubuntu-latest
     steps:
+      - run: echo ${{ github.sh }}
       - uses: actions/checkout@v2
 
       - name: Set up JDK 1.8
