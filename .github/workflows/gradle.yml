@@ -37,6 +37,7 @@ jobs:
         path: build/libs
 
   build_docker_image:
+    needs: build_and_test
 
     runs-on: ubuntu-latest
 
