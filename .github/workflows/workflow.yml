@@ -17,7 +17,9 @@ jobs:
   build_and_test:
     runs-on: ubuntu-latest
     steps:
-      - run: echo "$TIME"k
+      - name: Dump GitHub context
+        run: echo "$TIME"
+
       - uses: actions/checkout@v2
 
       - name: Set up JDK 1.8
