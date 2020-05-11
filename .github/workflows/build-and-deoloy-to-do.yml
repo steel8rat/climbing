@@ -69,6 +69,11 @@ jobs:
       - name: Push image to Dockerhub
         run: docker push $IMAGE_NAME
 
+      - name: Remove old artifacts
+        uses: c-hive/gha-remove-artifacts@v1
+        with:
+          age: '1 hour'
+
   deploy_to_do:
     needs: build_docker_image
     runs-on: ubuntu-latest
