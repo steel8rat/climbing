@@ -24,8 +24,8 @@ repositories {
         name = "GitHubPackages"
         url = uri("https://maven.pkg.github.com/steel8rat/maven")
         credentials {
-            username = project.findProperty("gpr.user") ?: System.getenv("USERNAME")
-            password = project.findProperty("gpr.key") ?: System.getenv("TOKEN")
+            username = project.findProperty("gpr.user") ?: System.getenv("GRADLE_GPR_USER")
+            password = project.findProperty("gpr.key") ?: System.getenv("GRADLE_GPR_KEY")
         }
     }
 }
@@ -35,7 +35,7 @@ dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-security'
     implementation 'org.springframework.boot:spring-boot-starter-web'
     compileOnly 'org.projectlombok:lombok'
-    compileOnly 'com.mokhov.opencv:4.1.2'
+    compileOnly 'com.mokhov:opencv:4.1.2'
     developmentOnly 'org.springframework.boot:spring-boot-devtools'
     annotationProcessor 'org.springframework.boot:spring-boot-configuration-processor'
     annotationProcessor 'org.projectlombok:lombok'
