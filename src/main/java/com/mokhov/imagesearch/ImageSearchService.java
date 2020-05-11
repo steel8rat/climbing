@@ -17,5 +17,6 @@ public class ImageSearchService {
         MatOfKeyPoint keyPoints = new MatOfKeyPoint();
         Mat descriptors = new Mat();
         Mat mask = new Mat();
+        System.out.println("It works");
     }
 }
