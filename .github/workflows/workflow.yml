@@ -64,7 +64,7 @@ jobs:
         run: echo ${{ secrets.DOCKERHUB_PASSWORD }} | docker login -u ${{ secrets.DOCKERHUB_USERNAME }} --password-stdin
 
       - name: Download native library
-        run: curl https://drive.google.com/file/d/1qV4X9Dl0gXQDb865cqIHlVnYYLCSEj4b/view?usp=sharing --output build/libs/libopencv_java412.so
+        run: curl https://spaces.routesetter.app/misc/libopencv_java412.so --output build/libs/libopencv_java412.so
 
       - name: Build Docker image
         run: docker build --build-arg JAR_FILE=build/libs/*.jar --build-arg LIB_FILE=build/libs/*.so --file Dockerfile --tag $IMAGE_NAME:$GITHUB_SHA .
