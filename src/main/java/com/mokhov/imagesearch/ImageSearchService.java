@@ -12,11 +12,6 @@ public class ImageSearchService {
 
     @PostConstruct
     public void init() {
-        nu.pattern.OpenCV.loadShared();
-        ORB detector = ORB.create();
-        MatOfKeyPoint keyPoints = new MatOfKeyPoint();
-        Mat descriptors = new Mat();
-        Mat mask = new Mat();
-        System.out.println("It works");
+
     }
 }

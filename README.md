@@ -5,7 +5,7 @@ Spring boot app for image searching
 
 
 ### Building Docker image
-`./gradlew build && java -jar build/libs/app.jar`
+`./gradlew build`
 
 `docker build --build-arg JAR_FILE=build/libs/*.jar -t steel8rat/image-search .`
 
