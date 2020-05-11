@@ -12,19 +12,20 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 public class ImageSearchApplication {
 
     public static void main(String[] args) {
-        //nu.pattern.OpenCV.loadShared();
-        System.out.println("Test01");
+        nu.pattern.OpenCV.loadShared();
+        System.out.println("Test4321");
         SpringApplication.run(ImageSearchApplication.class, args);
         System.out.println("Test2");
-        //ORB detector = ORB.create();
+        ORB detector = ORB.create();
         System.out.println("Test3");
-        //MatOfKeyPoint keyPoints = new MatOfKeyPoint();
+        MatOfKeyPoint keyPoints = new MatOfKeyPoint();
         System.out.println("Test4");
-        //Mat descriptors = new Mat();
+        Mat descriptors = new Mat();
         System.out.println("Test5");
-        //Mat mask = new Mat();
+        Mat mask = new Mat();
         System.out.println("It works1 !!!!!!!!");
-        //System.out.println(mask.toString());
+        System.out.println(mask.toString());
+        System.out.println("It works again");
 
     }
 

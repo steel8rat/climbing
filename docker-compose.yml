@@ -1,0 +1,23 @@
+version: '3.7'
+
+services:
+
+  alpine:
+    image: steel8rat/image-search:alpine
+    build:
+      context: .
+      dockerfile: ./docker/alpine/Dockerfile
+      args:
+        - JAR_FILE=build/libs/*.jar
+    ports:
+      - "8080:8080"
+
+  ubuntu:
+    image: steel8rat/image-search:ubuntu
+    build:
+      context: .
+      dockerfile: ./docker/ubuntu/Dockerfile
+      args:
+        - JAR_FILE=build/libs/*.jar
+    ports:
+      - "8080:8080"
