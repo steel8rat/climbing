@@ -15,6 +15,7 @@ env:
   DOCKER_IMAGE_TAG: ${{ github.sha }} # take commit sha as a image tag
 
   KUBERNETIS_CLUSTER_NAME: k8s-dev
+  KUBERNETIS_CONFIG: kubernetes/do-config.yml
 
 # Used for pulling java packages from github in case there are any
 #  GRADLE_GPR_KEY: ${{ secrets.GRADLE_GPR_KEY }}
@@ -85,7 +86,7 @@ jobs:
         uses: actions/checkout@v2
 
       - name: Update deployment file
-        run: sed -i 's|<IMAGE>|'${DOCKER_IMAGE_NAME}':'${DOCKER_IMAGE_TAG}'|' $GITHUB_WORKSPACE/kubernetes/do-config.yml
+        run: sed -i 's|<IMAGE>|'${DOCKER_IMAGE_NAME}':'${DOCKER_IMAGE_TAG}'|' $GITHUB_WORKSPACE/$KUBERNETIS_CONFIG
 
       - name: Install doctl
         uses: digitalocean/action-doctl@v2
@@ -96,7 +97,7 @@ jobs:
         run: doctl kubernetes cluster kubeconfig save $KUBERNETIS_CLUSTER_NAME
 
       - name: Deploy to DigitalOcean Kubernetes
-        run: kubectl apply -f $GITHUB_WORKSPACE/config/do-config.yml
+        run: kubectl apply -f $GITHUB_WORKSPACE/$KUBERNETIS_CONFIG
 
       - name: Verify deployment
         run: kubectl rollout status deployment/image-search
