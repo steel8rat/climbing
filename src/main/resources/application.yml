@@ -1,4 +1,11 @@
-
+do:
+  space:
+    bucket: routesetter
+    endpoint: sfo2.digitaloceanspaces.com
+    key: 3MEMYPGZQBH555XIGD2A
+    region: sfo2
+    secret: JRDrVKq+kdSB/f+snNXrqhHridvQ2XzA2gaLZyPy/xg
+    subdomain-endpoint-with-protocol: https://spaces.routesetter.app
 
 spring:
   data:
@@ -6,3 +13,26 @@ spring:
       host: localhost
       port: 27017
       database: climbing
+  main:
+    banner-mode: 'off'
+  thymeleaf:
+    cache: false
+
+yelp:
+  search:
+    categories: rock_climbing,climbing
+    limit: 50
+    radius: 40000
+    term: climbing gym
+    url: https://api.yelp.com/v3/businesses/search
+  token: lC1fjO6zhvps7tQLoHt7P17-F1a2Kh6rjSfAqSETBfj7dp4WoMJ6_PCXqlZ3wRRiAi_z7bfsmnoAgU5MKtJeI6cY0-zh_pKCdQc5MmoaICJ_Hm0w4LI31Wovx73uXXYx
+
+jwt:
+  secret: 0jT/8fcA9wLf/EkE6fln/rj5b5kd/CpnHZjPNsS7tegG7cdg4PJUT0M97FQ7p9NvNHG4SfiAXesXVC65SWgTfuhv+nigVbnjYJ3GivkNl/p51C+z/uxWqokZiOnMRhgdA78rXdMxqxDs0Nu7Kn5k6xjRBqdHTaD4TAfmh8XFpbpP8Idzc0u+Gj6oAHiUY0K0DTwZ0Uzqef8yPP3B0ouosyVKAbJII6HmSEmN6g==
+
+user:
+  nickname:
+    allowed-char: ._0123456789qwertyuiopasdfghjklzxcvbnmQWERTYUIOPASDFGHJKLZXCVBNM
+    max-char: 20
+  full-name:
+    max-char: 50

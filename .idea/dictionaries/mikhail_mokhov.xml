@@ -1,10 +1,21 @@
 <component name="ProjectDictionaryState">
   <dictionary name="mikhail.mokhov">
     <words>
+      <w>amazonaws</w>
+      <w>bcpkix</w>
+      <w>bouncycastle</w>
+      <w>gson</w>
+      <w>jjwt</w>
+      <w>jsonwebtoken</w>
+      <w>mashape</w>
       <w>mokhov</w>
+      <w>nimbusds</w>
       <w>opencv</w>
       <w>openpnp</w>
+      <w>presigned</w>
       <w>projectlombok</w>
+      <w>ratelimit</w>
+      <w>unirest</w>
     </words>
   </dictionary>
 </component>

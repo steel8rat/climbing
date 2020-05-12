@@ -10,4 +10,16 @@ services:
       args:
         - JAR_FILE=build/libs/*.jar
     ports:
-      - "8080:8080"
+      - 8080:8080
+
+  mongo-local:
+    image: mongo
+    environment:
+      MONGO_INITDB_DATABASE: climbing
+    volumes:
+      - mongodata:/data/db
+    ports:
+      - 27017:27017
+
+volumes:
+  mongodata:

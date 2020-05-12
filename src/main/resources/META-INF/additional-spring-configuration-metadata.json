@@ -1,0 +1,84 @@
+{
+  "properties": [
+    {
+      "name": "yelp.token",
+      "type": "java.lang.String",
+      "description": "Token for Yelp API."
+    },
+    {
+      "name": "yelp.search.url",
+      "type": "java.lang.String",
+      "description": "Yelp search URL."
+    },
+    {
+      "name": "yelp.search.term",
+      "type": "java.lang.String",
+      "description": "Description for yelp.search.term."
+    },
+    {
+      "name": "yelp.search.radius",
+      "type": "java.lang.String",
+      "description": "Description for yelp.search.radius."
+    },
+    {
+      "name": "yelp.search.categories",
+      "type": "java.lang.String",
+      "description": "Description for yelp.search.categories."
+    },
+    {
+      "name": "yelp.search.limit",
+      "type": "java.lang.String",
+      "description": "Description for yelp.search.limit."
+    },
+    {
+      "name": "do.space.bucket",
+      "type": "java.lang.String",
+      "description": "Description for do.space.bucket."
+    },
+    {
+      "name": "do.space.secret",
+      "type": "java.lang.String",
+      "description": "Description for do.space.secret."
+    },
+    {
+      "name": "do.space.region",
+      "type": "java.lang.String",
+      "description": "Description for do.space.region."
+    },
+    {
+      "name": "do.space.key",
+      "type": "java.lang.String",
+      "description": "Description for do.space.key."
+    },
+    {
+      "name": "do.space.endpoint",
+      "type": "java.lang.String",
+      "description": "Description for do.space.endpoint."
+    },
+    {
+      "name": "jwt.secret",
+      "type": "java.lang.String",
+      "description": "Description for jwt.secret."
+    },
+    {
+      "name": "do.space.subdomain-endpoint-with-protocol",
+      "type": "java.lang.String",
+      "description": "Description for do.space.subdomain-endpoint-with-protocol."
+    },
+    {
+      "name": "user.full-name.max-char",
+      "type": "java.lang.String",
+      "description": "Description for user.fullname.max-char."
+    },
+    {
+      "name": "user.nickname.allowed-char",
+      "type": "java.lang.String",
+      "description": "Description for user.nickname.allowed-char."
+    },
+    {
+      "name": "user.nickname.max-char",
+      "type": "java.lang.String",
+      "description": "Description for user.nickname.max-char."
+    }
+  ]
+}
