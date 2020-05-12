@@ -44,9 +44,9 @@ spec:
 apiVersion: v1
 kind: Service
 metadata:
-  name: mongo
+  name: mongosvc
   labels:
-    app: mongo
+    app: mongosvc
 spec:
   ports:
     - port: 27017
