@@ -1,20 +1,18 @@
-package com.mokhov.imagesearch;
+package com.mokhov.climbing;
 
-import lombok.RequiredArgsConstructor;
 import org.opencv.core.Mat;
 import org.opencv.core.MatOfKeyPoint;
 import org.opencv.features2d.ORB;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
-@RequiredArgsConstructor
 @SpringBootApplication
-public class ImageSearchApplication {
+public class ClimbingApplication {
 
     public static void main(String[] args) {
         nu.pattern.OpenCV.loadShared();
         System.out.println("Test4321");
-        SpringApplication.run(ImageSearchApplication.class, args);
+        SpringApplication.run(ClimbingApplication.class, args);
         System.out.println("Test2");
         ORB detector = ORB.create();
         System.out.println("Test3");
@@ -26,7 +24,6 @@ public class ImageSearchApplication {
         System.out.println("It works1 !!!!!!!!");
         System.out.println(mask.toString());
         System.out.println("It works again");
-
     }
 
 }

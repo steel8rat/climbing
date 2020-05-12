@@ -1,10 +1,10 @@
-package com.mokhov.imagesearch;
+package com.mokhov.climbing;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 
 @SpringBootTest
-class ImageSearchApplicationTests {
+class ClimbingApplicationTests {
 
     @Test
     void contextLoads() {

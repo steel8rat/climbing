@@ -57,21 +57,21 @@ spec:
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: image-search
+  name: climbing
   labels:
-    app: image-search
+    app: climbing
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: image-search
+      app: climbing
   template:
     metadata:
       labels:
-        app: image-search
+        app: climbing
     spec:
       containers:
-        - name: image-search
+        - name: climbing
           image: <IMAGE>
           ports:
             - containerPort: 8080
@@ -80,13 +80,13 @@ spec:
 apiVersion: v1
 kind: Service
 metadata:
-  name: image-search-service
+  name: climbing-service
   labels:
-    name: image-search-service
+    name: climbing-service
 spec:
   type: NodePort
   selector:
-    app: image-search
+    app: climbing
   ports:
     - port: 8080
       targetPort: 8080

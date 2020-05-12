@@ -10,12 +10,13 @@ on:
       - master
 
 env:
-  DOCKER_IMAGE_NAME: steel8rat/image-search
-  DOCKER_FILE: docker/ubuntu/Dockerfile
+  DOCKER_IMAGE_NAME: steel8rat/climbing
+  DOCKER_FILE: Dockerfile
   DOCKER_IMAGE_TAG: ${{ github.sha }} # take commit sha as a image tag
 
-  KUBERNETES_CLUSTER_NAME: k8s-dev
-  KUBERNETES_CONFIG: kubernetes/do-config.yml
+  K8S_CLUSTER_NAME: k8s-dev
+  K8S_CONFIG: k8s/config.yml
+  K8S_DEPLOYMENT: deployment/climbing
 
 # Used for pulling java packages from github in case there are any
 #  GRADLE_GPR_KEY: ${{ secrets.GRADLE_GPR_KEY }}
@@ -90,7 +91,7 @@ jobs:
         uses: actions/checkout@v2
 
       - name: Update deployment file
-        run: sed -i 's|<IMAGE>|'${DOCKER_IMAGE_NAME}':'${DOCKER_IMAGE_TAG}'|' $GITHUB_WORKSPACE/$KUBERNETES_CONFIG
+        run: sed -i 's|<IMAGE>|'${DOCKER_IMAGE_NAME}':'${DOCKER_IMAGE_TAG}'|' $GITHUB_WORKSPACE/$K8S_CONFIG
 
       - name: Install doctl
         uses: digitalocean/action-doctl@v2
@@ -98,10 +99,10 @@ jobs:
           token: ${{ secrets.DIGITALOCEAN_ACCESS_TOKEN }}
 
       - name: Save DigitalOcean kubeconfig
-        run: doctl kubernetes cluster kubeconfig save $KUBERNETES_CLUSTER_NAME
+        run: doctl kubernetes cluster kubeconfig save $K8S_CLUSTER_NAME
 
       - name: Deploy to DigitalOcean Kubernetes
-        run: kubectl apply -f $GITHUB_WORKSPACE/$KUBERNETES_CONFIG
+        run: kubectl apply -f $GITHUB_WORKSPACE/$K8S_CONFIG
 
       - name: Verify deployment
-        run: kubectl rollout status deployment/image-search
+        run: kubectl rollout status $K8S_DEPLOYMENT
