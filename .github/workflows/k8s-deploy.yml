@@ -65,13 +65,13 @@ jobs:
 
       - name: Downloaded files
         run: ls -R
-        working-directory: build/libs
+        working-directory: build/libs/artifact
 
       - name: Login to DockerHub Registry
         run: echo ${{ secrets.DOCKERHUB_PASSWORD }} | docker login -u ${{ secrets.DOCKERHUB_USERNAME }} --password-stdin
 
       - name: Build Docker image
-        run: docker build --build-arg JAR_FILE=build/libs/*.jar --file $DOCKER_FILE --tag $DOCKER_IMAGE_NAME:$DOCKER_IMAGE_TAG .
+        run: docker build --build-arg JAR_FILE=build/libs/artifact/*.jar --file $DOCKER_FILE --tag $DOCKER_IMAGE_NAME:$DOCKER_IMAGE_TAG .
 
       - name: Push image to Dockerhub
         run: docker push $DOCKER_IMAGE_NAME:$DOCKER_IMAGE_TAG
