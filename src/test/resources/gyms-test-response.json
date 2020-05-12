@@ -1,0 +1,46 @@
+{
+  "provider": "YELP",
+  "cached": false,
+  "businesses": [
+    {
+      "id": "business2",
+      "coordinates": {
+        "latitude": 43.675677,
+        "longitude": -79.398656
+      },
+      "distance": 0.01995900103978137,
+      "hidden": false,
+      "homeGym": false
+    },
+    {
+      "id": "business1",
+      "coordinates": {
+        "latitude": 43.375677,
+        "longitude": -79.998647
+      },
+      "distance": 0.5399702339817322,
+      "hidden": false,
+      "homeGym": false
+    },
+    {
+      "id": "business3",
+      "coordinates": {
+        "latitude": 43.005636,
+        "longitude": -79.008647
+      },
+      "distance": 0.7460042504154949,
+      "hidden": false,
+      "homeGym": false
+    },
+    {
+      "id": "business4",
+      "coordinates": {
+        "latitude": 44.005636,
+        "longitude": -69.008647
+      },
+      "distance": 7.49417556654982,
+      "hidden": false,
+      "homeGym": false
+    }
+  ]
+}
