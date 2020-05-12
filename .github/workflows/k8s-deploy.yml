@@ -50,8 +50,7 @@ jobs:
       - name: Upload artifacts
         uses: actions/upload-artifact@v2
         with:
-          name: Package
-          path: build/libs
+          path: build/libs/
 
   build_docker_image:
     needs: build_and_test
@@ -62,7 +61,6 @@ jobs:
       - name: Download artifacts
         uses: actions/download-artifact@v2
         with:
-          name: Package
           path: build/libs
 
       - name: Downloaded files
