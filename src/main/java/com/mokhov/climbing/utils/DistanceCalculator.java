@@ -12,7 +12,7 @@ public class DistanceCalculator {
             double dist = Math.sin(Math.toRadians(lat1)) * Math.sin(Math.toRadians(lat2)) + Math.cos(Math.toRadians(lat1)) * Math.cos(Math.toRadians(lat2)) * Math.cos(Math.toRadians(theta));
             dist = Math.acos(dist);
             dist = Math.toDegrees(dist);
-            if (unit == DistanceUnitsEnum.degrees) return dist;
+            if (unit == DistanceUnitsEnum.degrees) return (double)Math.round(dist * 100000000000d) / 100000000000d;
             dist = dist * 60 * 1.1515;
             if (unit == DistanceUnitsEnum.kilometers) {
                 dist = dist * 1.609344;
