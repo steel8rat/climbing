@@ -37,11 +37,13 @@ class SecurityConfig extends WebSecurityConfigurerAdapter {
     private final JwtAuthenticationProvider jwtAuthenticationProvider;
 
     private static final RequestMatcher PUBLIC_URLS = new OrRequestMatcher(
-            // Sign In/Sign Up
+            // Apple Sign In/Sign Up
             new AntPathRequestMatcher(UserController.PATH  + "/login/apple", HttpMethod.POST.name()),
             new AntPathRequestMatcher(UserController.PATH + "/login/google", HttpMethod.POST.name()),
-            // HEALTH CHECK
-            new AntPathRequestMatcher("/", HttpMethod.GET.name())
+            // Health check
+            new AntPathRequestMatcher("/", HttpMethod.GET.name()),
+            // Get gyms
+            new AntPathRequestMatcher(GymController.PATH, HttpMethod.GET.name())
     );
 
     private static final RequestMatcher PROTECTED_URLS = new NegatedRequestMatcher(PUBLIC_URLS);
