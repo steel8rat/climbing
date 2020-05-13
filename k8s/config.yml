@@ -80,26 +80,13 @@ spec:
 apiVersion: v1
 kind: Service
 metadata:
-  name: climbing-service
-  labels:
-    name: climbing-service
-spec:
-  type: NodePort
-  selector:
-    app: climbing
-  ports:
-    - port: 8080
-      targetPort: 8080
-      protocol: TCP
----
-apiVersion: v1
-kind: Service
-metadata:
   name: lb
 spec:
   type: LoadBalancer
+  selector:
+    app: climbing
   ports:
     - protocol: TCP
       port: 80
-      targetPort: 3000
+      targetPort: 8080
       name: http
