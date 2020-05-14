@@ -72,7 +72,7 @@ spec:
     spec:
       containers:
         - name: climbing
-          image: steel8rat/climbing:beca520e669d808c320c80d5d5112aea975a8e6f
+          image: <IMAGE>
           ports:
             - containerPort: 8080
               protocol: TCP
