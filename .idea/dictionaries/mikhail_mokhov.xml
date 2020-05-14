@@ -4,6 +4,7 @@
       <w>amazonaws</w>
       <w>bcpkix</w>
       <w>bouncycastle</w>
+      <w>ecfd</w>
       <w>gson</w>
       <w>jjwt</w>
       <w>jsonwebtoken</w>
