@@ -72,7 +72,7 @@ spec:
     spec:
       containers:
         - name: climbing
-          image: <IMAGE>
+          image: steel8rat/climbing:beca520e669d808c320c80d5d5112aea975a8e6f
           ports:
             - containerPort: 8080
               protocol: TCP
@@ -92,7 +92,7 @@ metadata:
     service.beta.kubernetes.io/do-loadbalancer-protocol: "http"
     service.beta.kubernetes.io/do-loadbalancer-algorithm: "round_robin"
     service.beta.kubernetes.io/do-loadbalancer-tls-ports: "443"
-    service.beta.kubernetes.io/do-loadbalancer-certificate-id: "ecfd1b02aa50629c562b1417122849d29b5dc2f7"
+    service.beta.kubernetes.io/do-loadbalancer-certificate-id: "9b6c0d76-367c-48f3-bcd8-43fcc40c9370"
     service.beta.kubernetes.io/do-loadbalancer-redirect-http-to-https: "true"
 spec:
   type: LoadBalancer
