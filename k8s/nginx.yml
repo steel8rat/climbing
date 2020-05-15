@@ -76,30 +76,40 @@ apiVersion: apps/v1
 kind: Deployment
   metadata:
     name: nginx
+    labels:
+      app: nginx
   spec:
     replicas: 2
-    containers:
-      - name: nginx
-        image: steel8rat/nginx:<TAG>
-        ports:
-          - containerPort: 80
-        volumeMounts:
-          - mountPath: /etc/nginx # mount nginx-conf volume to /etc/nginx
-            readOnly: true
-            name: nginx-conf
-          - mountPath: /var/log/nginx
-            name: log
-    volumes:
-      - name: nginx-conf
-        configMap:
-          name: nginx-conf # place ConfigMap `nginx-conf` on /etc/nginx
-          items:
-            - key: nginx.conf
-              path: nginx.conf
-            - key: virtualhost.conf
-              path: virtualhost/virtualhost.conf # dig directory
-      - name: log
-        emptyDir: {}
+    selector:
+      matchLabels:
+        app: nginx
+    template:
+      metadata:
+        labels:
+          app: nginx
+    spec:
+      containers:
+        - name: nginx
+          image: steel8rat/nginx:<TAG>
+          ports:
+            - containerPort: 80
+          volumeMounts:
+            - mountPath: /etc/nginx # mount nginx-conf volume to /etc/nginx
+              readOnly: true
+              name: nginx-conf
+            - mountPath: /var/log/nginx
+              name: log
+      volumes:
+        - name: nginx-conf
+          configMap:
+            name: nginx-conf # place ConfigMap `nginx-conf` on /etc/nginx
+            items:
+              - key: nginx.conf
+                path: nginx.conf
+              - key: virtualhost.conf
+                path: virtualhost/virtualhost.conf # dig directory
+        - name: log
+          emptyDir: {}
 ---
 apiVersion: v1
 kind: Service
