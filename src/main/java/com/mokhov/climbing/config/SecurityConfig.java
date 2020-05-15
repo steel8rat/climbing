@@ -41,7 +41,7 @@ class SecurityConfig extends WebSecurityConfigurerAdapter {
             new AntPathRequestMatcher(UserController.PATH  + "/login/apple", HttpMethod.POST.name()),
             new AntPathRequestMatcher(UserController.PATH + "/login/google", HttpMethod.POST.name()),
             // Health check
-            new AntPathRequestMatcher("/", HttpMethod.GET.name()),
+            new AntPathRequestMatcher("/api/", HttpMethod.GET.name()),
             // Get gyms
             new AntPathRequestMatcher(GymController.PATH, HttpMethod.GET.name())
     );

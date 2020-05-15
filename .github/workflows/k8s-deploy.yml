@@ -10,13 +10,12 @@ on:
       - master
 
 env:
-  DOCKER_IMAGE_NAME: steel8rat/climbing
-  DOCKER_FILE: Dockerfile
+  DOCKER_JDK_IMAGE: steel8rat/openjdk8
+  DOCKER_NGINX_IMAGE: steel8rat/nginx
   DOCKER_IMAGE_TAG: ${{ github.sha }} # take commit sha as a image tag
 
   K8S_CLUSTER_NAME: k8s-dev
-  K8S_CONFIG: k8s/config.yml
-  K8S_DEPLOYMENT: deployment/climbing
+  K8S_CONFIG_FOLDER: k8s
 
 # Used for pulling java packages from github in case there are any
 #  GRADLE_GPR_KEY: ${{ secrets.GRADLE_GPR_KEY }}
@@ -52,7 +51,8 @@ jobs:
         with:
           path: build/libs/
 
-  build_docker_image:
+
+  build_api_server_image:
     needs: build_and_test
     runs-on: ubuntu-latest
     steps:
@@ -71,25 +71,41 @@ jobs:
         run: echo ${{ secrets.DOCKERHUB_PASSWORD }} | docker login -u ${{ secrets.DOCKERHUB_USERNAME }} --password-stdin
 
       - name: Build Docker image
-        run: docker build --build-arg JAR_FILE=build/libs/artifact/*.jar --file $DOCKER_FILE --tag $DOCKER_IMAGE_NAME:$DOCKER_IMAGE_TAG .
+        run: docker build --build-arg JAR_FILE=build/libs/artifact/*.jar --file docker/api-server/Dockerfile --tag $JDK_IMAGE:$IMAGE_TAG .
 
       - name: Push image to Dockerhub
-        run: docker push $DOCKER_IMAGE_NAME:$DOCKER_IMAGE_TAG
+        run: docker push $JDK_IMAGE:$IMAGE_TAG
 
-      - name: Remove old artifacts
-        uses: c-hive/gha-remove-artifacts@v1
-        with:
-          age: '1 hour'
+
+  build_nginx_image:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Login to DockerHub Registry
+        run: echo ${{ secrets.DOCKERHUB_PASSWORD }} | docker login -u ${{ secrets.DOCKERHUB_USERNAME }} --password-stdin
+
+      - name: Build Docker image
+        run: docker build --build-arg HTML_FOLDER=html --file docker/nginx/Dockerfile --tag $NGINX_IMAGE:$IMAGE_TAG .
+
+      - name: Push image to Dockerhub
+        run: docker push $NGINX_IMAGE:$IMAGE_TAG
+
 
   deploy_to_do:
-    needs: build_docker_image
+    needs:
+      - build_api_server_image
+      - build_nginx_image
     runs-on: ubuntu-latest
     steps:
       - name: Checkout master
         uses: actions/checkout@v2
 
-      - name: Update deployment file
-        run: sed -i 's|<IMAGE>|'${DOCKER_IMAGE_NAME}':'${DOCKER_IMAGE_TAG}'|' $GITHUB_WORKSPACE/$K8S_CONFIG
+      - name: Update api-server deployment file
+        run: sed -i 's|<TAG>|'${IMAGE_TAG}'|' $GITHUB_WORKSPACE/$K8S_CONFIG_FOLDER/api-server.yml
+
+      - name: Update api-server deployment file
+        run: sed -i 's|<TAG>|'${IMAGE_TAG}'|' $GITHUB_WORKSPACE/$K8S_CONFIG_FOLDER/nginx.yml
 
       - name: Install doctl
         uses: digitalocean/action-doctl@v2
@@ -100,7 +116,12 @@ jobs:
         run: doctl kubernetes cluster kubeconfig save $K8S_CLUSTER_NAME
 
       - name: Deploy to DigitalOcean Kubernetes
-        run: kubectl apply -f $GITHUB_WORKSPACE/$K8S_CONFIG
+        run: kubectl apply -f $GITHUB_WORKSPACE/$K8S_CONFIG_FOLDER
 
-      - name: Verify deployment
-        run: kubectl rollout status $K8S_DEPLOYMENT
+      - name: Verify deployments
+        run: kubectl get deployments --output name | xargs -n1 kubectl rollout status
+
+      - name: Remove old artifacts
+        uses: c-hive/gha-remove-artifacts@v1
+        with:
+          age: '1 hour'

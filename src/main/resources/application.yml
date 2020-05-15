@@ -10,7 +10,7 @@ do:
 spring:
   data:
     mongodb:
-      host: mongosvc
+      host: localhost
       port: 27017
       database: climbing
   main:

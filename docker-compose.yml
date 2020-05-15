@@ -6,11 +6,21 @@ services:
     image: steel8rat/climbing
     build:
       context: .
-      dockerfile: Dockerfile
+      dockerfile: docker/api-server/Dockerfile
       args:
         - JAR_FILE=build/libs/*.jar
     ports:
       - 8080:8080
+
+  nginx:
+    image: steel8rat/climbing-web
+    build:
+      context: .
+      args:
+        - HTML_FOLDER=html
+      dockerfile: docker/nginx/Dockerfile
+    ports:
+      - 80:80
 
   mongo-local:
     image: mongo
