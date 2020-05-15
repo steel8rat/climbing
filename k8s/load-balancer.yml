@@ -2,17 +2,16 @@ apiVersion: v1
 kind: Service
 metadata:
   name: http-lb
+  # DO NOT MODIFY LOAD BALANCER PARAMETERS IN DIGITAL OCEAN CONSOLE, USE BELOW ANNOTATIONS
   annotations:
+
+    service.beta.kubernetes.io/do-loadbalancer-name: "k8s-dev-lb"
     service.beta.kubernetes.io/do-loadbalancer-protocol: "http2"
     service.beta.kubernetes.io/do-loadbalancer-certificate-id: "9b6c0d76-367c-48f3-bcd8-43fcc40c9370"
+
+    # HEALTH CHECK
     service.beta.kubernetes.io/do-loadbalancer-healthcheck-path: "/api/"
-    service.beta.kubernetes.io/do-loadbalancer-healthcheck-check-interval-seconds: "10"
-    service.beta.kubernetes.io/do-loadbalancer-healthcheck-response-timeout-seconds: "5"
-    service.beta.kubernetes.io/do-loadbalancer-healthcheck-unhealthy-threshold: "3"
-    service.beta.kubernetes.io/do-loadbalancer-healthcheck-healthy-threshold: "5"
-    service.beta.kubernetes.io/do-loadbalancer-algorithm: "round_robin"
-    service.beta.kubernetes.io/do-loadbalancer-redirect-http-to-https: "true"
-    service.beta.kubernetes.io/do-loadbalancer-enable-backend-keepalive: "true"
+
 spec:
   type: LoadBalancer
   selector:
