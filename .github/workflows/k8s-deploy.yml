@@ -10,9 +10,9 @@ on:
       - master
 
 env:
-  DOCKER_JDK_IMAGE: steel8rat/openjdk8
-  DOCKER_NGINX_IMAGE: steel8rat/nginx
-  DOCKER_IMAGE_TAG: ${{ github.sha }} # take commit sha as a image tag
+  JDK_IMAGE: steel8rat/openjdk8
+  NGINX_IMAGE: steel8rat/nginx
+  IMAGE_TAG: ${{ github.sha }} # take commit sha as a image tag
 
   K8S_CLUSTER_NAME: k8s-dev
   K8S_CONFIG_FOLDER: k8s
