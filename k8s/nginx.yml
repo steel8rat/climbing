@@ -72,21 +72,35 @@ data:
         }
     }
 ---
+apiVersion: v1
+kind: Service
+metadata:
+  name: nginx
+  labels:
+    app: nginx
+spec:
+  ports:
+    - port: 80
+      targetPort: 80
+      protocol: TCP
+  selector:
+    app: nginx
+---
 apiVersion: apps/v1
 kind: Deployment
-  metadata:
-    name: nginx
-    labels:
+metadata:
+  name: nginx
+  labels:
+    app: nginx
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
       app: nginx
-  spec:
-    replicas: 2
-    selector:
-      matchLabels:
+  template:
+    metadata:
+      labels:
         app: nginx
-    template:
-      metadata:
-        labels:
-          app: nginx
     spec:
       containers:
         - name: nginx
@@ -110,17 +124,3 @@ kind: Deployment
                 path: virtualhost/virtualhost.conf # dig directory
         - name: log
           emptyDir: {}
----
-apiVersion: v1
-kind: Service
-metadata:
-  name: nginx
-  labels:
-    app: nginx
-spec:
-  ports:
-    - port: 80
-      targetPort: 80
-      protocol: TCP
-  selector:
-    app: nginx
