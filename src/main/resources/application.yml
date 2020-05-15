@@ -5,7 +5,11 @@ do:
     key: 3MEMYPGZQBH555XIGD2A
     region: sfo2
     secret: JRDrVKq+kdSB/f+snNXrqhHridvQ2XzA2gaLZyPy/xg
-    subdomain-endpoint-with-protocol: https://spaces.routesetter.app
+    subdomain-endpoint-with-protocol: https://cdn.routesetter.app
+
+server:
+  http2:
+    enabled: true
 
 spring:
   data:
