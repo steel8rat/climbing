@@ -3,13 +3,12 @@ package com.mokhov.climbing.controllers;
 import com.mokhov.climbing.config.AppConfig;
 import com.mokhov.climbing.config.UserConfig;
 import com.mokhov.climbing.enumerators.BusinessProviderEnum;
+import com.mokhov.climbing.exceptions.UserNotFoundException;
 import com.mokhov.climbing.models.*;
 import com.mokhov.climbing.repository.GymRepository;
 import com.mokhov.climbing.repository.UserRepository;
-import com.mokhov.climbing.services.AppleSignInServiceImpl;
-import com.mokhov.climbing.services.JwtService;
-import com.mokhov.climbing.services.S3Service;
-import com.mokhov.climbing.utils.StringUtils;
+import com.mokhov.climbing.services.*;
+import com.mokhov.climbing.utils.Utils;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.BadCredentialsException;
@@ -19,7 +18,6 @@ import org.springframework.web.bind.annotation.*;
 import java.util.HashSet;
 import java.util.Optional;
 import java.util.Set;
-import java.util.UUID;
 
 @RestController
 @RequiredArgsConstructor
@@ -32,17 +30,19 @@ public class UserController {
     private final S3Service s3Service;
     private final JwtService jwtService;
     private final UserConfig userConfig;
+    private final UserService userService;
+    private final UuidService uuidService;
 
     @GetMapping("/logout")
-    boolean logout(@NonNull @AuthenticationPrincipal JwtAuthenticatedUser jwtUser) {
-        User user = getMongoUser(jwtUser.getId());
+    boolean logout(@NonNull @AuthenticationPrincipal JwtAuthenticatedUser jwtUser) throws UserNotFoundException {
+        User user = userService.getMongoUser(jwtUser.getId());
         userRepository.save(user);
         return true;
     }
 
     @PostMapping("/gyms")
-    String addHomGym(@AuthenticationPrincipal JwtAuthenticatedUser jwtUser, @RequestParam BusinessProviderEnum provider, @RequestParam String id) {
-        User user = getMongoUser(jwtUser.getId());
+    String addHomGym(@AuthenticationPrincipal JwtAuthenticatedUser jwtUser, @RequestParam BusinessProviderEnum provider, @RequestParam String id) throws UserNotFoundException {
+        User user = userService.getMongoUser(jwtUser.getId());
         Gym gym = null;
         Optional<Gym> optionalGym;
         switch (provider) {
@@ -76,8 +76,8 @@ public class UserController {
     }
 
     @DeleteMapping("/gyms")
-    void removeHomeGym(@AuthenticationPrincipal JwtAuthenticatedUser jwtUser, @RequestParam String gymId) {
-        User user = getMongoUser(jwtUser.getId());
+    void removeHomeGym(@AuthenticationPrincipal JwtAuthenticatedUser jwtUser, @RequestParam String gymId) throws UserNotFoundException {
+        User user = userService.getMongoUser(jwtUser.getId());
         Optional<Gym> optionalGym = gymRepository.findById(gymId);
         if (!optionalGym.isPresent()) throw new RuntimeException(String.format("Gym {%s} isn't found", gymId));
         String homeGymId = optionalGym.get().getId();
@@ -93,8 +93,8 @@ public class UserController {
     }
 
     @GetMapping
-    User getUser(@AuthenticationPrincipal JwtAuthenticatedUser jwtUser) {
-        return getMongoUser(jwtUser.getId());
+    User getUser(@AuthenticationPrincipal JwtAuthenticatedUser jwtUser) throws UserNotFoundException {
+        return userService.getMongoUser(jwtUser.getId());
     }
 
     /**
@@ -116,7 +116,7 @@ public class UserController {
             user = new User(appleIdCredential);
             String email = user.getEmail();
             if (email != null && email.length() > 0) {
-                String nickname = StringUtils.getNicknameFromEmail(email);
+                String nickname = Utils.getNicknameFromEmail(email);
                 if (!userRepository.existsByNickname(nickname)) user.setNickname(nickname);
             }
             user.setPhotoPath(String.format("/avatar/av%s.jpg", (int) (3.0 * Math.random())));
@@ -146,26 +146,25 @@ public class UserController {
     }
 
     @PostMapping("/")
-    public void updateUser(@AuthenticationPrincipal JwtAuthenticatedUser jwtUser, @RequestBody EditUserRequest editUserRequest) {
-        User user = getMongoUser(jwtUser.getId());
+    public void updateUser(@AuthenticationPrincipal JwtAuthenticatedUser jwtUser, @RequestBody EditUserRequest editUserRequest) throws UserNotFoundException {
+        User user = userService.getMongoUser(jwtUser.getId());
         user.setName(editUserRequest.getName());
         user.setNickname(editUserRequest.getNickname());
         userRepository.save(user);
     }
 
-    @GetMapping("/requestUploadPhotoUrl")
-    public RequestPhotoUploadUrlResponse requestPhotoUploadUrl(@AuthenticationPrincipal JwtAuthenticatedUser jwtUser, @RequestParam String fileExtension) {
-        User user = getMongoUser(jwtUser.getId());
-        String fileId = UUID.randomUUID().toString().replace("-", "");
+    @GetMapping("/requestUploadUrl")
+    public RequestPhotoUploadUrlResponse requestUploadUrl(@AuthenticationPrincipal JwtAuthenticatedUser jwtUser, @RequestParam String fileExtension) throws UserNotFoundException {
+        //TODO validate file extension
+        User user = userService.getMongoUser(jwtUser.getId());
+        String fileId = uuidService.generateUuid();
         String objectKey = s3Service.getUserPhotoKey(user, fileId + fileExtension);
-        RequestPhotoUploadUrlResponse response = new RequestPhotoUploadUrlResponse(fileId, objectKey);
-        response.setUrl(s3Service.generatePresignedS3UploadUrl(objectKey));
-        return response;
+        return new RequestPhotoUploadUrlResponse(fileId, objectKey);
     }
 
     @GetMapping("/updatePhotoUrl")
-    public String updatePhotoUrl(@AuthenticationPrincipal JwtAuthenticatedUser jwtUser, @RequestParam String fileName) {
-        User user = getMongoUser(jwtUser.getId());
+    public String updatePhotoUrl(@AuthenticationPrincipal JwtAuthenticatedUser jwtUser, @RequestParam String fileName) throws UserNotFoundException {
+        User user = userService.getMongoUser(jwtUser.getId());
         String objectKey = s3Service.getUserPhotoKey(user, fileName);
         if (!s3Service.doesObjectExist(objectKey))
             throw new RuntimeException("S3 object isn't found");
@@ -219,21 +218,7 @@ public class UserController {
     @GetMapping("/validateFullName")
     public String validateFullName(@RequestParam String value) {
         value = value.trim();
-        return checkFullname(value);
+        return userService.checkFullname(value);
     }
-
-    private User getMongoUser(@NonNull String id) {
-        Optional<User> optionalOfUser = userRepository.findById(id);
-        if (!optionalOfUser.isPresent()) throw new RuntimeException(String.format("jwtUser with id [%s] isn't found", id));
-        return optionalOfUser.get();
-    }
-
-    private String checkFullname(@NonNull String fullName) {
-        if (fullName.length() > userConfig.getFullNameMaxChar())
-            return String.format("Must be less than %s characters", userConfig.getFullNameMaxChar());
-        // No issues found
-        return "";
-    }
-
 
 }

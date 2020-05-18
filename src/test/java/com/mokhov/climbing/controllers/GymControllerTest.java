@@ -7,15 +7,11 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import com.mokhov.climbing.enumerators.BusinessProviderEnum;
 import com.mokhov.climbing.models.*;
-import com.mokhov.climbing.repository.GymRepository;
-import com.mokhov.climbing.repository.UserRepository;
-import com.mokhov.climbing.repository.YelpBusinessRepository;
-import com.mokhov.climbing.repository.YelpCacheRepository;
+import com.mokhov.climbing.repository.*;
 import com.mokhov.climbing.services.JwtService;
 import com.mokhov.climbing.services.YelpService;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
-//import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.autoconfigure.data.mongo.MongoDataAutoConfiguration;
@@ -27,7 +23,6 @@ import org.springframework.http.MediaType;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.test.context.support.WithMockUser;
-import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder;
@@ -44,24 +39,24 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-//@RunWith(SpringRunner.class)
 @AutoConfigureMockMvc
 @SpringBootTest
-@EnableAutoConfiguration(exclude={MongoAutoConfiguration.class, MongoDataAutoConfiguration.class})
+@EnableAutoConfiguration(exclude = {MongoAutoConfiguration.class, MongoDataAutoConfiguration.class})
 class GymControllerTest {
 
     private static final User adminUser = new User();
 
-
     @MockBean
     private YelpBusinessRepository yelpBusinessRepository;
-
 
     @Autowired
     private MockMvc mvc;
 
     @Autowired
     private JwtService jwtService;
+
+    @MockBean
+    private RouteRepository routeRepository;
 
     @MockBean
     private YelpCacheRepository yelpCacheRepository;
@@ -76,7 +71,7 @@ class GymControllerTest {
     private UserRepository userRepository;
 
     @BeforeAll
-    static void init(){
+    static void init() {
         adminUser.setId("adminUserId");
         adminUser.setNickname("adminUserNickname");
         List<GrantedAuthority> authorities = new ArrayList<>();
@@ -190,7 +185,7 @@ class GymControllerTest {
         given(gymRepository.findAllByYelpIds(Arrays.asList("business1", "business2", "business3", "business4"))).willReturn(hiddenGyms);
 
         MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders
-                .get(GymController.PATH )
+                .get(GymController.PATH)
                 .param("latitude", "43.695636")
                 .param("longitude", "-79.398647");
 

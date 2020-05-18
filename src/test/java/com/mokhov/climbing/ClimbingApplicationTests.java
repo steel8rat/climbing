@@ -1,9 +1,6 @@
 package com.mokhov.climbing;
 
-import com.mokhov.climbing.repository.GymRepository;
-import com.mokhov.climbing.repository.UserRepository;
-import com.mokhov.climbing.repository.YelpBusinessRepository;
-import com.mokhov.climbing.repository.YelpCacheRepository;
+import com.mokhov.climbing.repository.*;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.autoconfigure.data.mongo.MongoDataAutoConfiguration;
@@ -26,6 +23,9 @@ class ClimbingApplicationTests {
 
     @MockBean
     private YelpCacheRepository yelpCacheRepository;
+
+    @MockBean
+    private RouteRepository routeRepository;
 
     @Test
     void contextLoads() {

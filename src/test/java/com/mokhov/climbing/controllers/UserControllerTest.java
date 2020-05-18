@@ -1,15 +1,11 @@
 package com.mokhov.climbing.controllers;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.mokhov.climbing.models.*;
-import com.mokhov.climbing.repository.GymRepository;
-import com.mokhov.climbing.repository.UserRepository;
-import com.mokhov.climbing.repository.YelpBusinessRepository;
-import com.mokhov.climbing.repository.YelpCacheRepository;
+import com.mokhov.climbing.repository.*;
 import com.mokhov.climbing.services.AppleSignInServiceImpl;
 import com.mokhov.climbing.services.JwtService;
-import com.fasterxml.jackson.databind.ObjectMapper;
-//import org.junit.Test;
-//import org.junit.runner.RunWith;
+import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.autoconfigure.data.mongo.MongoDataAutoConfiguration;
@@ -18,17 +14,15 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
-import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
-import org.junit.jupiter.api.Test;
+
 import static org.mockito.BDDMockito.given;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-//@RunWith(SpringRunner.class)
 @AutoConfigureMockMvc
 @SpringBootTest
 @EnableAutoConfiguration(exclude={MongoAutoConfiguration.class, MongoDataAutoConfiguration.class})
@@ -54,6 +48,9 @@ public class UserControllerTest {
 
     @MockBean
     private YelpCacheRepository yelpCacheRepository;
+
+    @MockBean
+    private RouteRepository routeRepository;
 
     @Test
     public void shouldNOtAllowPrivateEndpoints() throws Exception {
