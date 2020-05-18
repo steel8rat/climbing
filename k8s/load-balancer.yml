@@ -7,6 +7,7 @@ metadata:
 
     service.beta.kubernetes.io/do-loadbalancer-name: "k8s-dev-lb"
     service.beta.kubernetes.io/do-loadbalancer-protocol: "http2"
+    service.beta.kubernetes.io/do-loadbalancer-http2-ports: "443"
     service.beta.kubernetes.io/do-loadbalancer-certificate-id: "9b6c0d76-367c-48f3-bcd8-43fcc40c9370"
 
     # HEALTH CHECK

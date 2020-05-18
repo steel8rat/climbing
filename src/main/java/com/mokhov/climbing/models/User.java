@@ -28,7 +28,7 @@ public class User implements UserDetails {
     @Indexed
     private String nickname;
     private String email;
-    private String photoUrl;
+    private String photoPath;
     private String token;
     private List<GrantedAuthority> authorities = new ArrayList<>();
 

@@ -119,7 +119,7 @@ public class UserController {
                 String nickname = StringUtils.getNicknameFromEmail(email);
                 if (!userRepository.existsByNickname(nickname)) user.setNickname(nickname);
             }
-            user.setPhotoUrl(String.format("https://spaces.routesetter.app/avatar/av%s.jpg", (int) (3.0 * Math.random())));
+            user.setPhotoPath(String.format("/avatar/av%s.jpg", (int) (3.0 * Math.random())));
             user = userRepository.save(user);
             newUserFlag = true;
         }
@@ -171,8 +171,8 @@ public class UserController {
             throw new RuntimeException("S3 object isn't found");
         s3Service.deleteFile(s3Service.getUserPhotoKey(user, user.getPhotoFileName()));
         s3Service.setPublicAccess(objectKey);
-        String photoUrl = s3Service.getSubdomainEndpointURL(objectKey);
-        user.setPhotoUrl(photoUrl);
+        String photoUrl = "/" + objectKey;
+        user.setPhotoPath(photoUrl);
         user.setPhotoFileName(fileName);
         userRepository.save(user);
         return photoUrl;

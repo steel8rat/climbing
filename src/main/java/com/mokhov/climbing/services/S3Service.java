@@ -35,10 +35,6 @@ public class S3Service {
         return amazonS3.doesObjectExist(doConfig.getBucket(), objectKey);
     }
 
-    public String getSubdomainEndpointURL(String path) {
-        return String.format("%s/%s", doConfig.getSubdomainEndpointWithProtocol(), path);
-    }
-
     public String getUserPhotoKey(User user, String fileName) {
         return String.format("users/%s/%s", user.getId(), fileName);
     }

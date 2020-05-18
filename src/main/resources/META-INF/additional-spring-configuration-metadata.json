@@ -61,11 +61,6 @@
       "description": "Description for jwt.secret."
     },
     {
-      "name": "do.space.subdomain-endpoint-with-protocol",
-      "type": "java.lang.String",
-      "description": "Description for do.space.subdomain-endpoint-with-protocol."
-    },
-    {
       "name": "user.full-name.max-char",
       "type": "java.lang.String",
       "description": "Description for user.fullname.max-char."

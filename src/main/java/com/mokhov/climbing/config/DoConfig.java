@@ -29,9 +29,6 @@ public class DoConfig {
     @Value("${do.space.bucket}")
     private String bucket;
 
-    @Value("${do.space.subdomain-endpoint-with-protocol}")
-    private String subdomainEndpointWithProtocol;
-
     @Bean
     public AmazonS3 getCredentials() {
         BasicAWSCredentials credentials = new BasicAWSCredentials(doSpaceKey, doSpaceSecret);
