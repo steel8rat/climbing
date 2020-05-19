@@ -25,11 +25,13 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
+import org.springframework.web.util.NestedServletException;
 
 import java.util.Date;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
@@ -37,7 +39,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @AutoConfigureMockMvc
 @SpringBootTest
-@EnableAutoConfiguration(exclude={MongoAutoConfiguration.class, MongoDataAutoConfiguration.class})
+@EnableAutoConfiguration(exclude = {MongoAutoConfiguration.class, MongoDataAutoConfiguration.class})
 class RouteControllerTest {
 
     private static final User user = new User();
@@ -76,7 +78,7 @@ class RouteControllerTest {
     private DateTime dateTime;
 
     @BeforeAll
-    static void init(){
+    static void init() {
         user.setId("userId");
         user.setNickname("userNickname");
     }
@@ -84,12 +86,11 @@ class RouteControllerTest {
     @WithMockUser
     @Test
     void shouldGenerateUploadUrl() throws Exception {
-
         String GYM_ID = "5ea8d830d1ce817a1cfe23ae";
         String FILE_ID = "4b8d8g0d1c5817a1cfe23a2";
         String fileExtension = ".jpg";
         String URL = "https://google.com";
-        Gym gym  = new Gym();
+        Gym gym = new Gym();
         gym.setId(GYM_ID);
 
         Date date = new Date();
@@ -104,7 +105,6 @@ class RouteControllerTest {
                 .param("gymId", GYM_ID)
                 .param("fileExtension", fileExtension);
 
-
         MvcResult result = this.mvc.perform(requestBuilder)
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
@@ -114,7 +114,22 @@ class RouteControllerTest {
 
         RequestPhotoUploadUrlResponse actualResponse = new Gson().fromJson(result.getResponse().getContentAsString(), RequestPhotoUploadUrlResponse.class);
         assertThat(expectedResponse.equals(actualResponse)).isTrue();
+    }
 
+    @WithMockUser
+    @Test()
+    void shouldThrowAnErrorWhenGymIsNotFound() {
+        String GYM_ID  = "111";
+        given(gymRepository.findById(GYM_ID)).willReturn(Optional.empty());
+        MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders
+                .get(RouteController.PATH + "/generateUploadUrl").header("Authorization", jwtService.generateToken(user))
+                .param("gymId", GYM_ID)
+                .param("fileExtension", ".jpg");
+        assertThatThrownBy(() -> this.mvc.perform(requestBuilder)
+                .andExpect(status().isOk())
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+                .andReturn()).isInstanceOf(NestedServletException.class)
+                .hasMessageContaining(String.format("Gym with id %s isn't found", GYM_ID));
     }
 
 
