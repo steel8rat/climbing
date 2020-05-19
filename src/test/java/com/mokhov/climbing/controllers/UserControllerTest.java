@@ -50,7 +50,7 @@ public class UserControllerTest {
     private YelpCacheRepository yelpCacheRepository;
 
     @MockBean
-    private RouteRepository routeRepository;
+    private GymRouteRepository gymRouteRepository;
 
     @Test
     public void shouldNOtAllowPrivateEndpoints() throws Exception {

@@ -74,6 +74,11 @@
       "name": "user.nickname.max-char",
       "type": "java.lang.String",
       "description": "Description for user.nickname.max-char."
+    },
+    {
+      "name": "do.space.upload-formats",
+      "type": "java.lang.String",
+      "description": "Description for do.space.upload-formats."
     }
   ]
 }

@@ -153,7 +153,7 @@ public class UserController {
         userRepository.save(user);
     }
 
-    @GetMapping("/requestUploadUrl")
+    @GetMapping("/generateUploadUrl")
     public RequestPhotoUploadUrlResponse requestUploadUrl(@AuthenticationPrincipal JwtAuthenticatedUser jwtUser, @RequestParam String fileExtension) throws UserNotFoundException {
         //TODO validate file extension
         User user = userService.getMongoUser(jwtUser.getId());

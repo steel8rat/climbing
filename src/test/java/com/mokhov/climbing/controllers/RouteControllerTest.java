@@ -63,7 +63,7 @@ class RouteControllerTest {
     private YelpBusinessRepository yelpBusinessRepository;
 
     @MockBean
-    private RouteRepository routeRepository;
+    private GymRouteRepository gymRouteRepository;
 
     @MockBean
     private Utils utils;
@@ -125,11 +125,21 @@ class RouteControllerTest {
                 .get(RouteController.PATH + "/generateUploadUrl").header("Authorization", jwtService.generateToken(user))
                 .param("gymId", GYM_ID)
                 .param("fileExtension", ".jpg");
-        assertThatThrownBy(() -> this.mvc.perform(requestBuilder)
-                .andExpect(status().isOk())
-                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-                .andReturn()).isInstanceOf(NestedServletException.class)
+        assertThatThrownBy(() -> this.mvc.perform(requestBuilder)).isInstanceOf(NestedServletException.class)
                 .hasMessageContaining(String.format("Gym with id %s isn't found", GYM_ID));
+    }
+
+    @WithMockUser
+    @Test()
+    void shouldThrowAnErrorWhenFileExtensionNotSupported() throws Exception {
+        String GYM_ID  = "111";
+        given(gymRepository.findById(GYM_ID)).willReturn(Optional.empty());
+        MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders
+                .get(RouteController.PATH + "/generateUploadUrl").header("Authorization", jwtService.generateToken(user))
+                .param("gymId", GYM_ID)
+                .param("fileExtension", ".txt");
+        this.mvc.perform(requestBuilder)
+                .andExpect(status().isBadRequest());
     }
 
 

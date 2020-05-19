@@ -25,7 +25,7 @@ class ClimbingApplicationTests {
     private YelpCacheRepository yelpCacheRepository;
 
     @MockBean
-    private RouteRepository routeRepository;
+    private GymRouteRepository gymRouteRepository;
 
     @Test
     void contextLoads() {

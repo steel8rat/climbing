@@ -56,7 +56,7 @@ class GymControllerTest {
     private JwtService jwtService;
 
     @MockBean
-    private RouteRepository routeRepository;
+    private GymRouteRepository gymRouteRepository;
 
     @MockBean
     private YelpCacheRepository yelpCacheRepository;

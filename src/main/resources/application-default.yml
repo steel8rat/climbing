@@ -5,8 +5,12 @@ do:
     key: 3MEMYPGZQBH555XIGD2A
     region: sfo2
     secret: JRDrVKq+kdSB/f+snNXrqhHridvQ2XzA2gaLZyPy/xg
+    upload-formats: .jpg,.jpeg,.png
+
 
 server:
+  compression:
+    enabled: true
   http2:
     enabled: true
 
@@ -39,3 +43,4 @@ user:
     max-char: 20
   full-name:
     max-char: 50
+
