@@ -118,15 +118,14 @@ class RouteControllerTest {
 
     @WithMockUser
     @Test()
-    void shouldThrowAnErrorWhenGymIsNotFound() {
+    void shouldThrowAnErrorWhenGymIsNotFound() throws Exception {
         String GYM_ID  = "111";
         given(gymRepository.findById(GYM_ID)).willReturn(Optional.empty());
         MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders
                 .get(RouteController.PATH + "/generateUploadUrl").header("Authorization", jwtService.generateToken(user))
                 .param("gymId", GYM_ID)
                 .param("fileExtension", ".jpg");
-        assertThatThrownBy(() -> this.mvc.perform(requestBuilder)).isInstanceOf(NestedServletException.class)
-                .hasMessageContaining(String.format("Gym with id %s isn't found", GYM_ID));
+        this.mvc.perform(requestBuilder).andExpect(status().isBadRequest());
     }
 
     @WithMockUser
