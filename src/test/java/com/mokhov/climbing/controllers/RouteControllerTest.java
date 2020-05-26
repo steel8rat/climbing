@@ -2,7 +2,7 @@ package com.mokhov.climbing.controllers;
 
 import com.amazonaws.services.s3.AmazonS3;
 import com.google.gson.Gson;
-import com.mokhov.climbing.models.Gym;
+import com.mokhov.climbing.models.GymImpl;
 import com.mokhov.climbing.models.RequestPhotoUploadUrlResponse;
 import com.mokhov.climbing.models.User;
 import com.mokhov.climbing.repository.*;
@@ -25,7 +25,6 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
-import org.springframework.web.util.NestedServletException;
 
 import java.util.Date;
 import java.util.Optional;
@@ -90,8 +89,8 @@ class RouteControllerTest {
         String FILE_ID = "4b8d8g0d1c5817a1cfe23a2";
         String fileExtension = ".jpg";
         String URL = "https://google.com";
-        Gym gym = new Gym();
-        gym.setId(GYM_ID);
+        GymImpl gym = new GymImpl();
+        gym.setYelpId(GYM_ID);
 
         Date date = new Date();
         given(dateTime.getDate()).willReturn(date);

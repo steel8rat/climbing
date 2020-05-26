@@ -7,16 +7,19 @@
       <w>ecfd</w>
       <w>gson</w>
       <w>jjwt</w>
+      <w>johnrengelman</w>
       <w>jsonwebtoken</w>
       <w>mashape</w>
       <w>mokhov</w>
       <w>nginx</w>
       <w>nimbusds</w>
+      <w>openapi</w>
       <w>opencv</w>
       <w>openpnp</w>
       <w>presigned</w>
       <w>projectlombok</w>
       <w>ratelimit</w>
+      <w>springdoc</w>
       <w>unirest</w>
     </words>
   </dictionary>

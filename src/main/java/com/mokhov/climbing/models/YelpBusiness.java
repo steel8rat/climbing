@@ -3,7 +3,6 @@ package com.mokhov.climbing.models;
 import com.google.gson.annotations.SerializedName;
 import lombok.Data;
 import org.springframework.data.annotation.Id;
-import org.springframework.data.annotation.Transient;
 import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.data.mongodb.core.mapping.Document;
 
@@ -11,10 +10,10 @@ import java.util.Date;
 
 @Data
 @Document(collection = "yelpBusinesses")
-public class YelpBusiness {
+public class YelpBusiness{
     @Id
-    private String id;
-    private String name;
+    private String yelpId;
+    private String yelpName;
     @SerializedName("image_url")
     private String yelpImageUrl;
     @SerializedName("url")
@@ -25,12 +24,7 @@ public class YelpBusiness {
     private Double yelpRating;
     private YelpCoordinates coordinates;
     private YelpLocation location;
-    private double distance;
-    private boolean hidden;
-    private String internalGymId;
-    @Transient
-    private boolean homeGym;
-
+    private Double distance;
     @Indexed(name = "created", expireAfterSeconds = 86400) //document is automatically deleted after 24hrs
     private Date created;
 }

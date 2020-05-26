@@ -1,3 +1,3 @@
 package com.mokhov.climbing.enumerators;
 
-public enum DistanceUnitsEnum {degrees, kilometers, miles, nauticalMiles}
+public enum DistanceUnitsEnum {DEGREES, KILOMETERS, NATURAL_MILES}
