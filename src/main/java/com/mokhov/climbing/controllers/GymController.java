@@ -29,7 +29,7 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 @RequestMapping(path = GymController.PATH)
 public class GymController {
-    public static final String PATH = AppConfig.API_ROOT_PATH_WITH_V_1 + "/businesses";
+    public static final String PATH = AppConfig.API_ROOT_PATH_WITH_V_1 + "/gyms";
 
     private final UserRepository userRepository;
     private final YelpService yelpService;
@@ -39,7 +39,7 @@ public class GymController {
 
 
     @GetMapping
-    public List<Gym> getBusinesses(@RequestParam double latitude, @RequestParam double longitude) throws UnirestException {
+    public List<Gym> getGyms(@RequestParam double latitude, @RequestParam double longitude) throws UnirestException {
         // Normalize coordinates to one decimal place
         String latitudeNormalized = normalizeCoordinate(latitude);
         String longitudeNormalized = normalizeCoordinate(longitude);
@@ -54,15 +54,15 @@ public class GymController {
             YelpSearchResponse yelpSearchResponse = yelpService.search(latitudeNormalized, longitudeNormalized);
             // Create new Yelp cache
             YelpCache yelpCache = new YelpCache(latLonId, yelpSearchResponse.getBusinesses());
-            yelpCacheRepository.save(yelpCache);
             yelpBusinessRepository.saveAll(yelpCache.getBusinesses());
+            yelpCacheRepository.save(yelpCache);
             yelpBusinessList = yelpSearchResponse.getBusinesses();
         }
         sortByDistance(yelpBusinessList, latitude, longitude);
-        List<Gym> foundByYelpIdGyms = gymRepository.findAllByYelpIds(yelpBusinessList.stream().map(YelpBusiness::getYelpId).collect(Collectors.toList()));
+        List<Gym> foundByYelpIdGyms = gymRepository.findAllByYelpIds(yelpBusinessList.stream().map(YelpBusiness::getId).collect(Collectors.toList()));
         List<Gym> resultGymList = new ArrayList<>();
         for (YelpBusiness yelpBusiness : yelpBusinessList) {
-            Optional<Gym> optionalGym = foundByYelpIdGyms.stream().filter(gym -> gym.getYelpId().equals(yelpBusiness.getYelpId())).findFirst();
+            Optional<Gym> optionalGym = foundByYelpIdGyms.stream().filter(gym -> gym.getYelpId().equals(yelpBusiness.getId())).findFirst();
             Gym gym = optionalGym.orElseGet(Gym::new);
             gym.loadPropertiesFromYelp(yelpBusiness);
             resultGymList.add(gym);

@@ -2,7 +2,7 @@ package com.mokhov.climbing.controllers;
 
 import com.amazonaws.services.s3.AmazonS3;
 import com.google.gson.Gson;
-import com.mokhov.climbing.models.GymImpl;
+import com.mokhov.climbing.models.Gym;
 import com.mokhov.climbing.models.RequestPhotoUploadUrlResponse;
 import com.mokhov.climbing.models.User;
 import com.mokhov.climbing.repository.*;
@@ -30,7 +30,6 @@ import java.util.Date;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
@@ -89,8 +88,8 @@ class RouteControllerTest {
         String FILE_ID = "4b8d8g0d1c5817a1cfe23a2";
         String fileExtension = ".jpg";
         String URL = "https://google.com";
-        GymImpl gym = new GymImpl();
-        gym.setYelpId(GYM_ID);
+        Gym gym = new Gym();
+        gym.setId(GYM_ID);
 
         Date date = new Date();
         given(dateTime.getDate()).willReturn(date);

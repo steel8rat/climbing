@@ -12,8 +12,8 @@ import java.util.Date;
 @Document(collection = "yelpBusinesses")
 public class YelpBusiness{
     @Id
-    private String yelpId;
-    private String yelpName;
+    private String id;
+    private String name;
     @SerializedName("image_url")
     private String yelpImageUrl;
     @SerializedName("url")
@@ -22,7 +22,7 @@ public class YelpBusiness{
     private Integer yelpReviewCount;
     @SerializedName("rating")
     private Double yelpRating;
-    private YelpCoordinates coordinates;
+    private Coordinates coordinates;
     private YelpLocation location;
     private Double distance;
     @Indexed(name = "created", expireAfterSeconds = 86400) //document is automatically deleted after 24hrs

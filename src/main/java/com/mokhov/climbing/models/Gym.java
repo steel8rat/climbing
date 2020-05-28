@@ -1,6 +1,7 @@
 package com.mokhov.climbing.models;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.springframework.data.annotation.Id;
@@ -12,6 +13,7 @@ import org.springframework.data.mongodb.core.mapping.Document;
 @Data
 @NoArgsConstructor
 @Document(collection = "gyms")
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public class Gym{
     @Id
     private String id;
@@ -19,11 +21,15 @@ public class Gym{
     private String city;
     @Indexed
     private String yelpId;
+    @Indexed
+    private String googleId;
+
     private Boolean visible;
     private double distance;
     @JsonIgnore
     @DBRef
     private User visibilityChangedBy;
+    private Coordinates coordinates;
 
     // YELP specific fields (not saved to mongo)
     @Transient
@@ -37,11 +43,10 @@ public class Gym{
     @Transient
     private Double yelpRating;
     @Transient
-    private YelpCoordinates yelpCoordinates;
-
+    private Coordinates yelpCoordinates;
 
     public void loadPropertiesFromYelp(YelpBusiness yelpBusiness){
-        yelpName = yelpBusiness.getYelpName();
+        yelpName = yelpBusiness.getName();
         yelpImageUrl = yelpBusiness.getYelpImageUrl();
         yelpUrl = yelpBusiness.getYelpUrl();
         yelpReviewCount = yelpBusiness.getYelpReviewCount();

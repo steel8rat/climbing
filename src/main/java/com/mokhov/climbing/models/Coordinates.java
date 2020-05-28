@@ -5,7 +5,7 @@ import lombok.Data;
 
 @Data
 @AllArgsConstructor
-public class YelpCoordinates {
+public class Coordinates {
     private Double latitude;
     private Double longitude;
 }

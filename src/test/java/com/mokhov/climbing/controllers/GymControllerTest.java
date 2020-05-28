@@ -1,10 +1,7 @@
 package com.mokhov.climbing.controllers;
 
 import com.amazonaws.util.IOUtils;
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
-import com.google.gson.JsonObject;
-import com.google.gson.JsonParser;
+import com.google.gson.*;
 import com.mokhov.climbing.enumerators.BusinessProviderEnum;
 import com.mokhov.climbing.models.*;
 import com.mokhov.climbing.repository.*;
@@ -82,25 +79,29 @@ class GymControllerTest {
 
     @Test
     void getGymsAndSortByDistanceWhenCacheIsFound() throws Exception {
-        List<YelpBusinessImpl> yelpBusinesses = new ArrayList<>();
-        YelpBusinessImpl business1 = new YelpBusinessImpl();
-        business1.setCoordinates(new YelpCoordinates(43.375677, -79.998647));
-        business1.setYelpId("business1");
+        List<YelpBusiness> yelpBusinesses = new ArrayList<>();
+        YelpBusiness business1 = new YelpBusiness();
+        business1.setCoordinates(new Coordinates(43.375677, -79.998647));
+        business1.setId("business1");
+        business1.setLocation(new YelpLocation("City1"));
         yelpBusinesses.add(business1);
 
-        YelpBusinessImpl business2 = new YelpBusinessImpl();
-        business2.setCoordinates(new YelpCoordinates(43.675677, -79.398656));
-        business2.setYelpId("business2");
+        YelpBusiness business2 = new YelpBusiness();
+        business2.setCoordinates(new Coordinates(43.675677, -79.398656));
+        business2.setId("business2");
+        business2.setLocation(new YelpLocation("City2"));
         yelpBusinesses.add(business2);
 
-        YelpBusinessImpl business3 = new YelpBusinessImpl();
-        business3.setCoordinates(new YelpCoordinates(43.005636, -79.008647));
-        business3.setYelpId("business3");
+        YelpBusiness business3 = new YelpBusiness();
+        business3.setCoordinates(new Coordinates(43.005636, -79.008647));
+        business3.setId("business3");
+        business3.setLocation(new YelpLocation("City3"));
         yelpBusinesses.add(business3);
 
-        YelpBusinessImpl business4 = new YelpBusinessImpl();
-        business4.setCoordinates(new YelpCoordinates(44.005636, -69.008647));
-        business4.setYelpId("business4");
+        YelpBusiness business4 = new YelpBusiness();
+        business4.setCoordinates(new Coordinates(44.005636, -69.008647));
+        business4.setId("business4");
+        business4.setLocation(new YelpLocation("City4"));
         yelpBusinesses.add(business4);
 
         // Create expected response
@@ -110,9 +111,10 @@ class GymControllerTest {
         given(yelpCacheRepository.findById("43.7,-79.4")).willReturn(Optional.of(yelpCache));
 
         // Mock gym repository with one hidden gym
-        List<GymImpl> hiddenGyms = new ArrayList<>();
-        GymImpl hiddenGym = new GymImpl();
-        hiddenGym.setYelpId("business4");
+        List<Gym> hiddenGyms = new ArrayList<>();
+        Gym hiddenGym = new Gym();
+        hiddenGym.setId("business4");
+        hiddenGym.setCity("City4");
         hiddenGyms.add(hiddenGym);
         given(gymRepository.findAllByYelpIds(Arrays.asList("business1", "business2", "business3", "business4"))).willReturn(hiddenGyms);
 
@@ -125,12 +127,11 @@ class GymControllerTest {
         String expectedJson = IOUtils.toString(Objects.requireNonNull(is));
 
         MvcResult result = this.mvc.perform(requestBuilder)
-
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
                 .andReturn();
 
-        JsonObject json = JsonParser.parseString(result.getResponse().getContentAsString()).getAsJsonObject();
+        JsonArray json = JsonParser.parseString(result.getResponse().getContentAsString()).getAsJsonArray();
         Gson gson = new GsonBuilder().setPrettyPrinting().create();
         String actualJson = gson.toJson(json);
 
@@ -146,26 +147,30 @@ class GymControllerTest {
 
     @Test
     void getGymsAndSortByDistanceWhenCacheIsNotFound() throws Exception {
-        List<YelpBusinessImpl> yelpBusinesses = new ArrayList<>();
-        YelpBusinessImpl business1 = new YelpBusinessImpl();
-        business1.setCoordinates(new YelpCoordinates(43.375677, -79.998647));
-        business1.setYelpId("business1");
+        List<YelpBusiness> yelpBusinesses = new ArrayList<>();
+        YelpBusiness business1 = new YelpBusiness();
+        business1.setCoordinates(new Coordinates(43.375677, -79.998647));
+        business1.setId("business1");
+        business1.setLocation(new YelpLocation("City1"));
         yelpBusinesses.add(business1);
 
-        YelpBusinessImpl business2 = new YelpBusinessImpl();
-        business2.setCoordinates(new YelpCoordinates(43.675677, -79.398656));
-        business2.setYelpId("business2");
+        YelpBusiness business2 = new YelpBusiness();
+        business2.setCoordinates(new Coordinates(43.675677, -79.398656));
+        business2.setId("business2");
+        business2.setLocation(new YelpLocation("City2"));
         yelpBusinesses.add(business2);
 
-        YelpBusinessImpl business3 = new YelpBusinessImpl();
-        business3.setCoordinates(new YelpCoordinates(43.005636, -79.008647));
-        business3.setYelpId("business3");
+        YelpBusiness business3 = new YelpBusiness();
+        business3.setCoordinates(new Coordinates(43.005636, -79.008647));
+        business3.setId("business3");
+        business3.setLocation(new YelpLocation("City3"));
         yelpBusinesses.add(business3);
 
         // Hidden gym
-        YelpBusinessImpl business4 = new YelpBusinessImpl();
-        business4.setCoordinates(new YelpCoordinates(44.005636, -69.008647));
-        business4.setYelpId("business4");
+        YelpBusiness business4 = new YelpBusiness();
+        business4.setCoordinates(new Coordinates(44.005636, -69.008647));
+        business4.setId("business4");
+        business4.setLocation(new YelpLocation("City4"));
         yelpBusinesses.add(business4);
 
         // Create expected response
@@ -177,10 +182,11 @@ class GymControllerTest {
 //        given(yelpBusinessRepository.saveAll(yelpCache.getBusinesses())).willReturn(null);
 
         // Mock gym repository with one hidden gym
-        List<GymImpl> hiddenGyms = new ArrayList<>();
-        GymImpl hiddenGym = new GymImpl();
+        List<Gym> hiddenGyms = new ArrayList<>();
+        Gym hiddenGym = new Gym();
         hiddenGym.setVisible(false);
-        hiddenGym.setYelpId("business4");
+        hiddenGym.setId("business4");
+        hiddenGym.setCity("City4");
         hiddenGyms.add(hiddenGym);
         given(gymRepository.findAllByYelpIds(Arrays.asList("business1", "business2", "business3", "business4"))).willReturn(hiddenGyms);
 
@@ -197,7 +203,7 @@ class GymControllerTest {
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
                 .andReturn();
 
-        JsonObject json = JsonParser.parseString(result.getResponse().getContentAsString()).getAsJsonObject();
+        JsonArray json = JsonParser.parseString(result.getResponse().getContentAsString()).getAsJsonArray();
         Gson gson = new GsonBuilder().setPrettyPrinting().create();
         String actualJson = gson.toJson(json);
 
@@ -231,8 +237,8 @@ class GymControllerTest {
     @Test
     @WithMockUser(roles = "ADMIN")
     void shouldAllowToChangeGymVisibilityWhenYelpProvider() throws Exception {
-        GymImpl gym = new GymImpl();
-        gym.setYelpId("yelp_id");
+        Gym gym = new Gym();
+        gym.setId("yelp_id");
         given(gymRepository.findByYelpId("yelp_id")).willReturn(Optional.of(gym));
         User user = new User();
         user.setId(adminUser.getId());
@@ -249,8 +255,8 @@ class GymControllerTest {
     @Test
     @WithMockUser(roles = "ADMIN")
     void shouldThrowErrorWhenYelpBusinessIsNotFound() {
-        GymImpl gym = new GymImpl();
-        gym.setYelpId("yelp_id");
+        Gym gym = new Gym();
+        gym.setId("yelp_id");
         given(gymRepository.findByYelpId("yelp_id")).willReturn(Optional.empty());
         User user = new User();
         user.setId(adminUser.getId());
@@ -269,8 +275,8 @@ class GymControllerTest {
     @Test
     @WithMockUser(roles = "ADMIN")
     void shouldThrowErrorWhenInternalBusinessIsNotFound() {
-        GymImpl gym = new GymImpl();
-        gym.setYelpId("yelp_id");
+        Gym gym = new Gym();
+        gym.setId("yelp_id");
         given(gymRepository.findByYelpId("yelp_id")).willReturn(Optional.empty());
         User user = new User();
         user.setId(adminUser.getId());
@@ -289,8 +295,8 @@ class GymControllerTest {
     @Test
     @WithMockUser(roles = "ADMIN")
     void shouldAllowToChangeGymVisibilityWhenInternalProvider() throws Exception {
-        GymImpl gym = new GymImpl();
-        gym.setYelpId("gym_id");
+        Gym gym = new Gym();
+        gym.setId("gym_id");
         given(gymRepository.findById("gym_id")).willReturn(Optional.of(gym));
         User user = new User();
         user.setId(adminUser.getId());
