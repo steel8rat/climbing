@@ -14,31 +14,30 @@ import org.springframework.stereotype.Service;
 public class YelpService {
 
     @Value("${yelp.token}")
-    private String YELP_TOKEN;
+    private String yelpToken;
     @Value("${yelp.search.url}")
-    private String YELP_SEARCH_URL;
+    private String yelpSearchUrl;
     @Value("${yelp.search.radius}")
-    private String YELP_SEARCH_RADIUS;
+    private String yelpSearchRadius;
     @Value("${yelp.search.categories}")
-    private String YELP_SEARCH_CATEGORIES;
+    private String yelpSearchCategories;
     @Value("${yelp.search.term}")
-    private String YELP_SEARCH_TERM;
+    private String yelpSearchTerm;
     @Value("${yelp.search.limit}")
-    private String YELP_SEARCH_LIMIT;
+    private String yelpSearchLimit;
 
     public YelpSearchResponse search(String latitude, String longitude) throws UnirestException {
-        HttpResponse<String> response = Unirest.get(YELP_SEARCH_URL)
-                .header("Authorization", "Bearer " + YELP_TOKEN)
+        HttpResponse<String> response = Unirest.get(yelpSearchUrl)
+                .header("Authorization", "Bearer " + yelpToken)
                 .queryString("latitude", latitude)
                 .queryString("longitude", longitude)
-                .queryString("term", YELP_SEARCH_TERM)
-                .queryString("categories", YELP_SEARCH_CATEGORIES)
-                .queryString("radius", YELP_SEARCH_RADIUS)
+                .queryString("term", yelpSearchTerm)
+                .queryString("categories", yelpSearchCategories)
+                .queryString("radius", yelpSearchRadius)
                 .queryString("sort_by", "distance")
-                .queryString("limit", YELP_SEARCH_LIMIT).asString();
-        //TODO add warning, maybe an email or slack if ratelimit-remaining is below a certain threshold
-        //System.out.print(response.getHeaders().getFirst("ratelimit-remaining"));
-        //TODO think about the case when get request to Yelp fails
+                .queryString("limit", yelpSearchLimit).asString();
+        // add warning, maybe an email or slack if ratelimit-remaining is below a certain threshold
+        // think about the case when get request to Yelp fails
         return new Gson().fromJson(response.getBody(), YelpSearchResponse.class);
     }
 

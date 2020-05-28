@@ -43,7 +43,11 @@ class SecurityConfig extends WebSecurityConfigurerAdapter {
             // Health check
             new AntPathRequestMatcher("/api/", HttpMethod.GET.name()),
             // Get gyms
-            new AntPathRequestMatcher(GymController.PATH, HttpMethod.GET.name())
+            new AntPathRequestMatcher(GymController.PATH, HttpMethod.GET.name()),
+            new AntPathRequestMatcher("/v3/api-docs", HttpMethod.GET.name()),
+            new AntPathRequestMatcher("/v3/api-docs.yaml", HttpMethod.GET.name()),
+            new AntPathRequestMatcher("/swagger-ui-custom.html", HttpMethod.GET.name())
+
     );
 
     private static final RequestMatcher PROTECTED_URLS = new NegatedRequestMatcher(PUBLIC_URLS);
@@ -114,8 +118,8 @@ class SecurityConfig extends WebSecurityConfigurerAdapter {
      * Disable Spring boot automatic filter registration.
      */
     @Bean
-    FilterRegistrationBean<?> disableAutoRegistration(final JwtAuthenticationFilter filter) {
-        final FilterRegistrationBean<?> registration = new FilterRegistrationBean<>(filter);
+    FilterRegistrationBean<JwtAuthenticationFilter> disableAutoRegistration(final JwtAuthenticationFilter filter) {
+        final FilterRegistrationBean<JwtAuthenticationFilter> registration = new FilterRegistrationBean<>(filter);
         registration.setEnabled(false);
         return registration;
     }

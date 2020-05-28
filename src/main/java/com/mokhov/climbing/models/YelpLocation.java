@@ -1,8 +1,10 @@
 package com.mokhov.climbing.models;
 
 import lombok.Data;
+import lombok.RequiredArgsConstructor;
 
 @Data
+@RequiredArgsConstructor
 public class YelpLocation {
-    private String city;
+    private final String city;
 }

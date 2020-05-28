@@ -16,16 +16,15 @@ import javax.crypto.spec.SecretKeySpec;
 
 @Service
 public class JwtService {
-
-    private static SecretKey secretKey;
-    private static final SignatureAlgorithm HS_512 = SignatureAlgorithm.HS512;
+    private static final SignatureAlgorithm hs512 = SignatureAlgorithm.HS512;
+    private SecretKey secretKey;
 
     @Value("${jwt.secret}")
-    private String BASE_64_ENCODED_SECRET;
+    private String base64EncodedSecret;
 
     private SecretKey getPrivateKey() {
         if (secretKey == null)
-            secretKey = new SecretKeySpec(Decoders.BASE64.decode(BASE_64_ENCODED_SECRET), HS_512.getJcaName());
+            secretKey = new SecretKeySpec(Decoders.BASE64.decode(base64EncodedSecret), hs512.getJcaName());
         return secretKey;
     }
 
@@ -48,7 +47,6 @@ public class JwtService {
     }
 
     public String generateToken(@NonNull User user) {
-        assert user.getId() != null && user.getId().length() > 0;
         Claims claims = Jwts.claims().setSubject(user.getId());
         claims.put("nickname", user.getNickname());
         String commaSeparatedAuthoritiesString = user.getAuthorities().toString().substring(1);
@@ -56,7 +54,7 @@ public class JwtService {
         claims.put("roles", commaSeparatedAuthoritiesString);
         return Jwts.builder()
                 .setClaims(claims)
-                .signWith(getPrivateKey(), HS_512)
+                .signWith(getPrivateKey(), hs512)
                 .compact();
     }
 }

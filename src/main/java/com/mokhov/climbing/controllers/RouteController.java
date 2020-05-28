@@ -20,7 +20,8 @@ import org.springframework.web.bind.annotation.*;
 @RequiredArgsConstructor
 @RequestMapping(path = RouteController.PATH)
 public class RouteController {
-    public final static String PATH = AppConfig.API_ROOT_PATH_WITH_V_1 + "/routes";
+    public static final String PATH = AppConfig.API_ROOT_PATH_WITH_V_1 + "/routes";
+
     private final S3Service s3Service;
     private final UuidService uuidService;
     private final UserService userService;
@@ -29,11 +30,12 @@ public class RouteController {
     private final DoConfig doConfig;
 
     @GetMapping("/generateUploadUrl")
-    public RequestPhotoUploadUrlResponse generateUploadUrl(@RequestParam String gymId, @RequestParam String fileExtension) throws GymNotFoundException, FileExtensionNotSupported {
-        if(!doConfig.getUploadFormats().contains(fileExtension.toLowerCase())) throw new FileExtensionNotSupported(String.format("Extension %s is not supported", fileExtension));
+    public RequestPhotoUploadUrlResponse generateUploadUrl(@RequestParam String gymId, @RequestParam String fileExtension) throws GymNotFoundException {
+        if (!doConfig.getUploadFormats().contains(fileExtension.toLowerCase()))
+            throw new FileExtensionNotSupported(String.format("Extension %s is not supported", fileExtension));
         String fileId = uuidService.generateUuid();
         String key = s3Service.getRoutePhotoKey(gymService.getGym(gymId), fileId + fileExtension);
-        return new RequestPhotoUploadUrlResponse(fileId ,s3Service.generatePresignedUploadUrl(key));
+        return new RequestPhotoUploadUrlResponse(fileId, s3Service.generatePresignedUploadUrl(key));
     }
 
     @PostMapping
@@ -41,7 +43,7 @@ public class RouteController {
         User user = userService.getMongoUser(jwtUser.getId());
         Gym gym = gymService.getGym(gymId);
         String objectKey = s3Service.getRoutePhotoKey(gym, photoFileName);
-        if (!s3Service.doesObjectExist(objectKey))
+        if (s3Service.doesObjectExist(objectKey))
             throw new S3ObjectNotFound(String.format("Uploaded file %s not found", objectKey));
         s3Service.setPublicAccess(objectKey);
         GymRoute route = new GymRoute();

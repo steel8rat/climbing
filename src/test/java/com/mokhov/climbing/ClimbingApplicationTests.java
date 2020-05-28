@@ -26,9 +26,4 @@ class ClimbingApplicationTests {
 
     @MockBean
     private GymRouteRepository gymRouteRepository;
-
-    @Test
-    void contextLoads() {
-    }
-
 }

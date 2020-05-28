@@ -45,7 +45,7 @@ public class S3Service {
     }
 
     public String getRoutePhotoKey(Gym gym, String fileName) {
-        return String.format("gyms/%s/%s", gym.getId(), fileName);
+        return String.format("gyms/%s/%s", gym.getYelpId(), fileName);
     }
 
     public void setPublicAccess(String path) {

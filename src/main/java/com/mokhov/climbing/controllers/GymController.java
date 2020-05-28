@@ -4,6 +4,9 @@ import com.mashape.unirest.http.exceptions.UnirestException;
 import com.mokhov.climbing.config.AppConfig;
 import com.mokhov.climbing.enumerators.BusinessProviderEnum;
 import com.mokhov.climbing.enumerators.DistanceUnitsEnum;
+import com.mokhov.climbing.exceptions.GymNotFound;
+import com.mokhov.climbing.exceptions.GymProviderNotSupported;
+import com.mokhov.climbing.exceptions.UserNotFound;
 import com.mokhov.climbing.models.*;
 import com.mokhov.climbing.repository.GymRepository;
 import com.mokhov.climbing.repository.UserRepository;
@@ -20,12 +23,14 @@ import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @RestController
 @RequiredArgsConstructor
 @RequestMapping(path = GymController.PATH)
 public class GymController {
-    public final static String PATH = AppConfig.API_ROOT_PATH_WITH_V_1 + "/gyms";
+    public static final String PATH = AppConfig.API_ROOT_PATH_WITH_V_1 + "/gyms";
+
     private final UserRepository userRepository;
     private final YelpService yelpService;
     private final YelpCacheRepository yelpCacheRepository;
@@ -34,7 +39,7 @@ public class GymController {
 
 
     @GetMapping
-    public GymsResponse getGyms(@RequestParam double latitude, @RequestParam double longitude) throws UnirestException {
+    public List<Gym> getGyms(@RequestParam double latitude, @RequestParam double longitude) throws UnirestException {
         // Normalize coordinates to one decimal place
         String latitudeNormalized = normalizeCoordinate(latitude);
         String longitudeNormalized = normalizeCoordinate(longitude);
@@ -42,22 +47,27 @@ public class GymController {
         String latLonId = generateLatLonId(latitudeNormalized, longitudeNormalized);
         // Check if mongo has cache for the given coordinates
         Optional<YelpCache> cache = yelpCacheRepository.findById(latLonId);
-        GymsResponse response;
+        List<YelpBusiness> yelpBusinessList;
         if (cache.isPresent() && cache.get().getBusinesses() != null && !cache.get().getBusinesses().isEmpty()) { // Cache is found
-            response = new GymsResponse(BusinessProviderEnum.YELP, true, cache.get().getBusinesses());
+            yelpBusinessList = cache.get().getBusinesses();
         } else { // Cache isn't found, call Yelp
             YelpSearchResponse yelpSearchResponse = yelpService.search(latitudeNormalized, longitudeNormalized);
             // Create new Yelp cache
             YelpCache yelpCache = new YelpCache(latLonId, yelpSearchResponse.getBusinesses());
-            yelpCacheRepository.save(yelpCache);
             yelpBusinessRepository.saveAll(yelpCache.getBusinesses());
-            response = new GymsResponse(BusinessProviderEnum.YELP, false, yelpSearchResponse.getBusinesses());
+            yelpCacheRepository.save(yelpCache);
+            yelpBusinessList = yelpSearchResponse.getBusinesses();
         }
-        // Apply hidden flags
-        extendWithInternalGyms(response.getBusinesses());
-        // For better accuracy sort results by distance from not rounded coordinates
-        sortByDistance(response.getBusinesses(), latitude, longitude);
-        return response;
+        sortByDistance(yelpBusinessList, latitude, longitude);
+        List<Gym> foundByYelpIdGyms = gymRepository.findAllByYelpIds(yelpBusinessList.stream().map(YelpBusiness::getId).collect(Collectors.toList()));
+        List<Gym> resultGymList = new ArrayList<>();
+        for (YelpBusiness yelpBusiness : yelpBusinessList) {
+            Optional<Gym> optionalGym = foundByYelpIdGyms.stream().filter(gym -> gym.getYelpId().equals(yelpBusiness.getId())).findFirst();
+            Gym gym = optionalGym.orElseGet(Gym::new);
+            gym.loadPropertiesFromYelp(yelpBusiness);
+            resultGymList.add(gym);
+        }
+        return resultGymList;
     }
 
     @DeleteMapping("/cache/yelp")
@@ -77,23 +87,22 @@ public class GymController {
      * ability to hide businesses that are not climbing gyms.
      *
      * @param jwtAuthenticatedUser injected authentication principal
-     * @param id         of the business
-     * @param provider   provider of the business (INTERNAL, YELP, GOOGLE)
-     * @param visibility to set
+     * @param id                   of the business
+     * @param provider             provider of the business (INTERNAL, YELP, GOOGLE)
+     * @param visibility           to set
      */
     @PatchMapping("/{id}")
     public void setVisibility(@AuthenticationPrincipal JwtAuthenticatedUser jwtAuthenticatedUser,
                               @PathVariable("id") String id, @RequestParam BusinessProviderEnum provider,
-                              @RequestParam boolean visibility) {
+                              @RequestParam boolean visibility) throws UserNotFound, GymNotFound, GymProviderNotSupported {
         Optional<User> optionalOfUser = userRepository.findById(jwtAuthenticatedUser.getId());
-        if(!optionalOfUser.isPresent()) throw new RuntimeException("jwtUser isn't found");
+        if (!optionalOfUser.isPresent()) throw new UserNotFound(String.format("jwtUser %s isn't found", jwtAuthenticatedUser.getId()));
         User user = optionalOfUser.get();
-        //TODO: add id validation
         Optional<Gym> optionalGym;
         switch (provider) {
             case INTERNAL:
                 optionalGym = gymRepository.findById(id);
-                if (!optionalGym.isPresent()) throw new RuntimeException("Gym not found");
+                if (!optionalGym.isPresent()) throw new GymNotFound("Gym not found");
                 Gym foundGym = optionalGym.get();
                 foundGym.setVisible(visibility);
                 foundGym.setVisibilityChangedBy(user);
@@ -113,29 +122,12 @@ public class GymController {
                 gymRepository.save(gym);
                 break;
             case GOOGLE:
-                throw new RuntimeException("GOOGLE provider is not supported yet");
-        }
-    }
-
-    private void extendWithInternalGyms(List<YelpBusiness> yelpBusinessList) {
-        List<String> ids = new ArrayList<>();
-        yelpBusinessList.forEach(business -> ids.add(business.getId()));
-        List<Gym> gyms = gymRepository.findAllByYelpIds(ids);
-        if (!gyms.isEmpty()) {
-            for(Gym gym: gyms){
-                for(YelpBusiness yelpBusiness: yelpBusinessList){
-                    if(gym.getYelpId().equals(yelpBusiness.getId())){
-                        yelpBusiness.setHidden(gym.isVisible());
-                        yelpBusiness.setInternalGymId(gym.getId());
-                        break;
-                    }
-                }
-            }
+                throw new GymProviderNotSupported("GOOGLE provider is not supported yet");
         }
     }
 
     private void sortByDistance(List<YelpBusiness> businesses, double latitude, double longitude) {
-        businesses.forEach((business) -> business.setDistance(DistanceCalculator.distance(latitude, longitude, business.getCoordinates().getLatitude(), business.getCoordinates().getLongitude(), DistanceUnitsEnum.degrees)));
+        businesses.forEach(business -> business.setDistance(DistanceCalculator.distance(latitude, longitude, business.getCoordinates().getLatitude(), business.getCoordinates().getLongitude(), DistanceUnitsEnum.DEGREES)));
         businesses.sort(Comparator.comparingDouble(YelpBusiness::getDistance));
     }
 
