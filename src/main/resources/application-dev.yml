@@ -19,6 +19,9 @@ spring:
       host: mongosvc
       port: 27017
       database: climbing
+      username: climbing-admin
+      password: jb56h94jl59hc3993ch9
+      authentication-database: admin
   main:
     banner-mode: 'off'
   thymeleaf:

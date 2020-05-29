@@ -29,6 +29,13 @@ spec:
       containers:
         - name: mongo
           image: mongo
+          env:
+            - name: MONGO_INITDB_ROOT_USERNAME
+              value: climbing-admin
+            - name: MONGO_INITDB_ROOT_PASSWORD
+              value: jb56h94jl59hc3993ch9
+            - name: MONGO_INITDB_DATABASE
+              value: climbing
           ports:
             - containerPort: 27017
               protocol: TCP
@@ -54,3 +61,18 @@ spec:
       protocol: TCP
   selector:
     app: mongo
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: cache
+  labels:
+    app: cache
+spec:
+  type: NodePort
+  ports:
+    - port: 27017
+      nodePort: 31997
+      protocol: TCP
+  selector:
+    app: cache
