@@ -51,13 +51,4 @@ public class S3Service {
     public void setPublicAccess(String path) {
         amazonS3.setObjectAcl(doConfig.getBucket(), path, CannedAccessControlList.PublicRead);
     }
-
-    public RequestPhotoUploadUrlResponse generateUploadUrlResponse(@NonNull String path, @NonNull String fileExtension) {
-        String fileId = uuidService.generateUuid();
-        String objectKey = String.format("%s/%s%s", path, fileId, fileExtension);
-        RequestPhotoUploadUrlResponse response = new RequestPhotoUploadUrlResponse(fileId, objectKey);
-        response.setUrl(generatePresignedUploadUrl(objectKey));
-        return response;
-    }
-
 }

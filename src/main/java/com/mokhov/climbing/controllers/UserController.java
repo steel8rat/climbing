@@ -147,7 +147,7 @@ public class UserController {
         return new SignInWithProviderResponse(user, true);
     }
 
-    @PostMapping("/")
+    @PostMapping()
     public void updateUser(@AuthenticationPrincipal JwtAuthenticatedUser jwtUser, @RequestBody EditUserRequest editUserRequest) throws UserNotFoundException {
         User user = userService.getMongoUser(jwtUser.getId());
         user.setName(editUserRequest.getName());
@@ -155,20 +155,20 @@ public class UserController {
         userRepository.save(user);
     }
 
-    @GetMapping("/generateUploadUrl")
+    @GetMapping("/generatePresignedUploadUrl")
     public RequestPhotoUploadUrlResponse requestUploadUrl(@AuthenticationPrincipal JwtAuthenticatedUser jwtUser, @RequestParam String fileExtension) throws UserNotFoundException {
         // validate file extension
         User user = userService.getMongoUser(jwtUser.getId());
         String fileId = uuidService.generateUuid();
         String objectKey = s3Service.getUserPhotoKey(user, fileId + fileExtension);
-        return new RequestPhotoUploadUrlResponse(fileId, objectKey);
+        return new RequestPhotoUploadUrlResponse(fileId, s3Service.generatePresignedUploadUrl(objectKey));
     }
 
     @GetMapping("/updatePhotoUrl")
     public String updatePhotoUrl(@AuthenticationPrincipal JwtAuthenticatedUser jwtUser, @RequestParam String fileName) throws UserNotFoundException, S3ObjectNotFound {
         User user = userService.getMongoUser(jwtUser.getId());
         String objectKey = s3Service.getUserPhotoKey(user, fileName);
-        if (s3Service.doesObjectExist(objectKey))
+        if (!s3Service.doesObjectExist(objectKey))
             throw new S3ObjectNotFound(String.format("S3 object %s isn't found", objectKey));
         s3Service.deleteFile(s3Service.getUserPhotoKey(user, user.getPhotoFileName()));
         s3Service.setPublicAccess(objectKey);
