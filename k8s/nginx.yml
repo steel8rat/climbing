@@ -94,7 +94,7 @@ data:
     }
   virtualhost.conf: |
     server {
-        listen       80 http2;
+        listen       80;
         server_name  localhost;
 
         #charset koi8-r;
