@@ -1,38 +1,42 @@
 [
   {
-    "city": "City2",
     "yelpId": "business2",
-    "distance": 0.01995900104,
+    "distance": 0.0,
     "yelpCoordinates": {
       "latitude": 43.675677,
       "longitude": -79.398656
-    }
+    },
+    "yelpCity": "City2",
+    "yelpDistance": 0.01995900104
   },
   {
-    "city": "City1",
     "yelpId": "business1",
-    "distance": 0.53997023398,
+    "distance": 0.0,
     "yelpCoordinates": {
       "latitude": 43.375677,
       "longitude": -79.998647
-    }
+    },
+    "yelpCity": "City1",
+    "yelpDistance": 0.53997023398
   },
   {
-    "city": "City3",
     "yelpId": "business3",
-    "distance": 0.74600425042,
+    "distance": 0.0,
     "yelpCoordinates": {
       "latitude": 43.005636,
       "longitude": -79.008647
-    }
+    },
+    "yelpCity": "City3",
+    "yelpDistance": 0.74600425042
   },
   {
-    "city": "City4",
     "yelpId": "business4",
-    "distance": 7.49417556655,
+    "distance": 0.0,
     "yelpCoordinates": {
       "latitude": 44.005636,
       "longitude": -69.008647
-    }
+    },
+    "yelpCity": "City4",
+    "yelpDistance": 7.49417556655
   }
 ]
