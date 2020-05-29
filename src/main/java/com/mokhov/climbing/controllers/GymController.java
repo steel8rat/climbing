@@ -2,7 +2,7 @@ package com.mokhov.climbing.controllers;
 
 import com.mashape.unirest.http.exceptions.UnirestException;
 import com.mokhov.climbing.config.AppConfig;
-import com.mokhov.climbing.enumerators.BusinessProviderEnum;
+import com.mokhov.climbing.enumerators.GymProvider;
 import com.mokhov.climbing.enumerators.DistanceUnitsEnum;
 import com.mokhov.climbing.exceptions.GymNotFound;
 import com.mokhov.climbing.exceptions.GymProviderNotSupported;
@@ -93,7 +93,7 @@ public class GymController {
      */
     @PatchMapping("/{id}")
     public void setVisibility(@AuthenticationPrincipal JwtAuthenticatedUser jwtAuthenticatedUser,
-                              @PathVariable("id") String id, @RequestParam BusinessProviderEnum provider,
+                              @PathVariable("id") String id, @RequestParam GymProvider provider,
                               @RequestParam boolean visibility) throws UserNotFound, GymNotFound, GymProviderNotSupported {
         Optional<User> optionalOfUser = userRepository.findById(jwtAuthenticatedUser.getId());
         if (!optionalOfUser.isPresent()) throw new UserNotFound(String.format("jwtUser %s isn't found", jwtAuthenticatedUser.getId()));

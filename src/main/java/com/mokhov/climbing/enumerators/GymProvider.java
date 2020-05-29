@@ -5,7 +5,7 @@ import lombok.Getter;
 
 
 @AllArgsConstructor
-public enum BusinessProviderEnum {
+public enum GymProvider {
     INTERNAL("internal"),
     YELP("yelp"),
     GOOGLE("google");

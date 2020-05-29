@@ -1,6 +1,7 @@
 [
   {
     "city": "City2",
+    "yelpId": "business2",
     "distance": 0.01995900104,
     "yelpCoordinates": {
       "latitude": 43.675677,
@@ -9,6 +10,7 @@
   },
   {
     "city": "City1",
+    "yelpId": "business1",
     "distance": 0.53997023398,
     "yelpCoordinates": {
       "latitude": 43.375677,
@@ -17,6 +19,7 @@
   },
   {
     "city": "City3",
+    "yelpId": "business3",
     "distance": 0.74600425042,
     "yelpCoordinates": {
       "latitude": 43.005636,
@@ -25,6 +28,7 @@
   },
   {
     "city": "City4",
+    "yelpId": "business4",
     "distance": 7.49417556655,
     "yelpCoordinates": {
       "latitude": 44.005636,

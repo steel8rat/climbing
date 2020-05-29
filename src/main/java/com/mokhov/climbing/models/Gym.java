@@ -44,16 +44,20 @@ public class Gym{
     private Double yelpRating;
     @Transient
     private Coordinates yelpCoordinates;
+    @Transient
+    private String yelpCity;
+    @Transient
+    private Double yelpDistance;
 
     public void loadPropertiesFromYelp(YelpBusiness yelpBusiness){
+        yelpId = yelpBusiness.getId();
         yelpName = yelpBusiness.getName();
         yelpImageUrl = yelpBusiness.getYelpImageUrl();
         yelpUrl = yelpBusiness.getYelpUrl();
         yelpReviewCount = yelpBusiness.getYelpReviewCount();
         yelpRating = yelpBusiness.getYelpRating();
         yelpCoordinates = yelpBusiness.getCoordinates();
-        city = yelpBusiness.getLocation().getCity();
-        distance = yelpBusiness.getDistance();
+        yelpCity = yelpBusiness.getLocation().getCity();
+        yelpDistance = yelpBusiness.getDistance();
     }
-
 }

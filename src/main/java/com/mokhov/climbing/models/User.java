@@ -32,7 +32,7 @@ public class User implements UserDetails {
     private String token;
     private List<GrantedAuthority> authorities = new ArrayList<>();
 
-    private Set<String> homeGymIds;
+    private Set<String> bookmarks;
 
     @JsonIgnore
     private String photoFileName;

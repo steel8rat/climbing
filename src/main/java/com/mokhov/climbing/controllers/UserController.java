@@ -1,8 +1,9 @@
 package com.mokhov.climbing.controllers;
 
+import com.mashape.unirest.http.exceptions.UnirestException;
 import com.mokhov.climbing.config.AppConfig;
 import com.mokhov.climbing.config.UserConfig;
-import com.mokhov.climbing.enumerators.BusinessProviderEnum;
+import com.mokhov.climbing.enumerators.GymProvider;
 import com.mokhov.climbing.exceptions.*;
 import com.mokhov.climbing.models.*;
 import com.mokhov.climbing.repository.GymRepository;
@@ -15,6 +16,8 @@ import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
+import java.io.IOException;
+import java.text.ParseException;
 import java.util.HashSet;
 import java.util.Optional;
 import java.util.Random;
@@ -43,9 +46,9 @@ public class UserController {
     }
 
     @PostMapping("/gyms")
-    public String addHomGym(@AuthenticationPrincipal JwtAuthenticatedUser jwtUser, @RequestParam BusinessProviderEnum provider, @RequestParam String id) throws UserNotFoundException, GymNotFound, GymProviderNotSupported {
+    public String addGymToBookmarks(@AuthenticationPrincipal JwtAuthenticatedUser jwtUser, @RequestParam GymProvider provider, @RequestParam String id) throws UserNotFoundException, GymNotFound, GymProviderNotSupported {
         User user = userService.getMongoUser(jwtUser.getId());
-        Gym gym = null;
+        Gym gym;
         Optional<Gym> optionalGym;
         switch (provider) {
             case INTERNAL:
@@ -70,20 +73,22 @@ public class UserController {
                 break;
             case GOOGLE:
                 throw new GymProviderNotSupported("Google api isn't supported yet");
+            default:
+                throw new GymProviderNotSupported("Unknown gym provider");
         }
-        if (user.getHomeGymIds() == null) user.setHomeGymIds(new HashSet<>());
-        user.getHomeGymIds().add(gym.getYelpId());
+        if (user.getBookmarks() == null) user.setBookmarks(new HashSet<>());
+        user.getBookmarks().add(gym.getYelpId());
         userRepository.save(user);
-        return gym.getYelpId();
+        return gym.getId();
     }
 
     @DeleteMapping("/gyms")
-    public void removeHomeGym(@AuthenticationPrincipal JwtAuthenticatedUser jwtUser, @RequestParam String gymId) throws UserNotFoundException, GymNotFound {
+    public void removeGymFromBookmarks(@AuthenticationPrincipal JwtAuthenticatedUser jwtUser, @RequestParam String gymId) throws UserNotFoundException, GymNotFound {
         User user = userService.getMongoUser(jwtUser.getId());
         Optional<Gym> optionalGym = gymRepository.findById(gymId);
         if (!optionalGym.isPresent()) throw new GymNotFound(String.format("Gym {%s} isn't found", gymId));
         String homeGymId = optionalGym.get().getYelpId();
-        Set<String> homeGymIds = user.getHomeGymIds();
+        Set<String> homeGymIds = user.getBookmarks();
         if (homeGymIds != null) {
             if (homeGymIds.remove(homeGymId)) {
                 userRepository.save(user);
@@ -105,7 +110,7 @@ public class UserController {
      * @throws BadCredentialsException in case of failed sign in
      */
     @PostMapping("/login/apple")
-    public SignInWithProviderResponse signInWithApple(@RequestBody AppleIdCredential appleIdCredential) throws Exception {
+    public SignInWithProviderResponse signInWithApple(@RequestBody AppleIdCredential appleIdCredential) throws ParseException, AppleKyeNotFoundForToken, IOException, UnirestException {
         if (!appleSignInService.validateIdentityToken(appleIdCredential.getIdentityToken()))
             throw new BadCredentialsException("Identity token is invalid");
         AppleTokenResponse appleTokenResponse = appleSignInService.obtainRefreshToken(appleIdCredential.getAuthorizationCode());

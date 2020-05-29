@@ -2,7 +2,7 @@ package com.mokhov.climbing.controllers;
 
 import com.amazonaws.util.IOUtils;
 import com.google.gson.*;
-import com.mokhov.climbing.enumerators.BusinessProviderEnum;
+import com.mokhov.climbing.enumerators.GymProvider;
 import com.mokhov.climbing.models.*;
 import com.mokhov.climbing.repository.*;
 import com.mokhov.climbing.services.JwtService;
@@ -245,7 +245,7 @@ class GymControllerTest {
         given(userRepository.findById(adminUser.getId())).willReturn(Optional.of(user));
         MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders
                 .patch(GymController.PATH + "/yelp_id").header("Authorization", jwtService.generateToken(adminUser))
-                .param("provider", BusinessProviderEnum.YELP.getName().toUpperCase())
+                .param("provider", GymProvider.YELP.getName().toUpperCase())
                 .param("visibility", "false");
         this.mvc.perform(requestBuilder)
                 .andExpect(status().isOk());
@@ -263,7 +263,7 @@ class GymControllerTest {
         given(userRepository.findById(adminUser.getId())).willReturn(Optional.of(user));
         MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders
                 .patch(GymController.PATH + "/yelp_id").header("Authorization", jwtService.generateToken(adminUser))
-                .param("provider", BusinessProviderEnum.YELP.getName().toUpperCase())
+                .param("provider", GymProvider.YELP.getName().toUpperCase())
                 .param("visibility", "false");
         try {
             this.mvc.perform(requestBuilder);
@@ -283,7 +283,7 @@ class GymControllerTest {
         given(userRepository.findById(adminUser.getId())).willReturn(Optional.of(user));
         MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders
                 .patch(GymController.PATH + "/yelp_id").header("Authorization", jwtService.generateToken(adminUser))
-                .param("provider", BusinessProviderEnum.INTERNAL.getName().toUpperCase())
+                .param("provider", GymProvider.INTERNAL.getName().toUpperCase())
                 .param("visibility", "false");
         try {
             this.mvc.perform(requestBuilder);
@@ -303,7 +303,7 @@ class GymControllerTest {
         given(userRepository.findById(adminUser.getId())).willReturn(Optional.of(user));
         MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders
                 .patch(GymController.PATH + "/gym_id").header("Authorization", jwtService.generateToken(adminUser))
-                .param("provider", BusinessProviderEnum.INTERNAL.getName().toUpperCase())
+                .param("provider", GymProvider.INTERNAL.getName().toUpperCase())
                 .param("visibility", "false");
         this.mvc.perform(requestBuilder)
                 .andExpect(status().isOk());
