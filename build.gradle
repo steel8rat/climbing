@@ -28,7 +28,7 @@ dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-web'
 
     implementation 'org.openpnp:opencv:4.3.0-2'
-    implementation 'com.amazonaws:aws-java-sdk-s3:1.11.779'
+    implementation 'com.amazonaws:aws-java-sdk-s3:1.11.804'
     implementation 'org.apache.commons:commons-text:1.8'
     implementation 'com.google.code.gson:gson:2.8.6'
     implementation 'org.bouncycastle:bcpkix-jdk15on:1.65'

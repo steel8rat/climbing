@@ -65,9 +65,9 @@ spec:
 apiVersion: v1
 kind: Service
 metadata:
-  name: cache
+  name: mongohub
   labels:
-    app: cache
+    app: mongohub
 spec:
   type: NodePort
   ports:
@@ -75,4 +75,4 @@ spec:
       nodePort: 31997
       protocol: TCP
   selector:
-    app: cache
+    app: mongo

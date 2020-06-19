@@ -28,6 +28,7 @@ import java.util.Set;
 @RequestMapping(path = UserController.PATH)
 public class UserController {
     public static final String PATH = AppConfig.API_ROOT_PATH_WITH_V_1 + "/user";
+    private static final String BOOKMARKS_PATH = "/bookmarks";
     
     private final AppleSignInServiceImpl appleSignInService;
     private final UserRepository userRepository;
@@ -45,7 +46,7 @@ public class UserController {
         return true;
     }
 
-    @PostMapping("/gyms")
+    @PostMapping(BOOKMARKS_PATH)
     public String addGymToBookmarks(@AuthenticationPrincipal JwtAuthenticatedUser jwtUser, @RequestParam GymProvider provider, @RequestParam String id) throws UserNotFoundException, GymNotFound, GymProviderNotSupported {
         User user = userService.getMongoUser(jwtUser.getId());
         Gym gym;
@@ -77,17 +78,17 @@ public class UserController {
                 throw new GymProviderNotSupported("Unknown gym provider");
         }
         if (user.getBookmarks() == null) user.setBookmarks(new HashSet<>());
-        user.getBookmarks().add(gym.getYelpId());
+        user.getBookmarks().add(gym.getId());
         userRepository.save(user);
         return gym.getId();
     }
 
-    @DeleteMapping("/gyms")
+    @DeleteMapping(BOOKMARKS_PATH)
     public void removeGymFromBookmarks(@AuthenticationPrincipal JwtAuthenticatedUser jwtUser, @RequestParam String gymId) throws UserNotFoundException, GymNotFound {
         User user = userService.getMongoUser(jwtUser.getId());
         Optional<Gym> optionalGym = gymRepository.findById(gymId);
         if (!optionalGym.isPresent()) throw new GymNotFound(String.format("Gym {%s} isn't found", gymId));
-        String homeGymId = optionalGym.get().getYelpId();
+        String homeGymId = optionalGym.get().getId();
         Set<String> homeGymIds = user.getBookmarks();
         if (homeGymIds != null) {
             if (homeGymIds.remove(homeGymId)) {

@@ -22,7 +22,7 @@ services:
     ports:
       - 80:80
 
-  mongo-local:
+  mongo:
     image: mongo
     environment:
       MONGO_INITDB_DATABASE: climbing
