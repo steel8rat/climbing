@@ -30,6 +30,7 @@ import java.util.stream.Collectors;
 @RequestMapping(path = GymController.PATH)
 public class GymController {
     public static final String PATH = AppConfig.API_ROOT_PATH_WITH_V_1 + "/gyms";
+    public static final String CACHE_YELP_PATH =  "/cache/yelp";
 
     private final UserRepository userRepository;
     private final YelpService yelpService;

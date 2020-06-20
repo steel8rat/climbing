@@ -38,12 +38,13 @@ class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     private static final RequestMatcher PUBLIC_URLS = new OrRequestMatcher(
             // Apple Sign In/Sign Up
-            new AntPathRequestMatcher(UserController.PATH  + "/login/apple", HttpMethod.POST.name()),
-            new AntPathRequestMatcher(UserController.PATH + "/login/google", HttpMethod.POST.name()),
+            new AntPathRequestMatcher(UserController.PATH + UserController.LOGIN_APPLE_PATH, HttpMethod.POST.name()),
+            new AntPathRequestMatcher(UserController.PATH + UserController.LOGIN_GOOGLE_PATH, HttpMethod.POST.name()),
             // Health check
-            new AntPathRequestMatcher("/api/", HttpMethod.GET.name()),
+            new AntPathRequestMatcher(AppConfig.API_ROOT_PATH, HttpMethod.GET.name()),
             // Get gyms
             new AntPathRequestMatcher(GymController.PATH, HttpMethod.GET.name()),
+            // SWAGGER SPECIFIC ROUTES
             new AntPathRequestMatcher("/v3/api-docs", HttpMethod.GET.name()),
             new AntPathRequestMatcher("/v3/api-docs.yaml", HttpMethod.GET.name()),
             new AntPathRequestMatcher("/swagger-ui-custom.html", HttpMethod.GET.name())
@@ -74,7 +75,7 @@ class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .addFilterBefore(restAuthenticationFilter(), AnonymousAuthenticationFilter.class)
 
                 .authorizeRequests()
-                .antMatchers(HttpMethod.DELETE, GymController.PATH + "/cache/yelp").hasRole("ADMIN")
+                .antMatchers(HttpMethod.DELETE, GymController.PATH + GymController.CACHE_YELP_PATH).hasRole("ADMIN")
                 .antMatchers(HttpMethod.PATCH, GymController.PATH + "/*").hasRole("ADMIN")
 
                 .and()

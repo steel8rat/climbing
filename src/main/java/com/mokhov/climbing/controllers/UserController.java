@@ -28,6 +28,9 @@ import java.util.Set;
 @RequestMapping(path = UserController.PATH)
 public class UserController {
     public static final String PATH = AppConfig.API_ROOT_PATH_WITH_V_1 + "/user";
+    public static final String LOGIN_PATH = "/login";
+    public static final String LOGIN_APPLE_PATH = LOGIN_PATH + "/apple";
+    public static final String LOGIN_GOOGLE_PATH = LOGIN_PATH + "/google";
     private static final String BOOKMARKS_PATH = "/bookmarks";
     
     private final AppleSignInServiceImpl appleSignInService;
@@ -110,7 +113,7 @@ public class UserController {
      * @return uuid
      * @throws BadCredentialsException in case of failed sign in
      */
-    @PostMapping("/login/apple")
+    @PostMapping(LOGIN_APPLE_PATH)
     public SignInWithProviderResponse signInWithApple(@RequestBody AppleIdCredential appleIdCredential) throws ParseException, AppleKyeNotFoundForToken, IOException, UnirestException {
         if (!appleSignInService.validateIdentityToken(appleIdCredential.getIdentityToken()))
             throw new BadCredentialsException("Identity token is invalid");
@@ -144,7 +147,7 @@ public class UserController {
     /**
      * @param googleIdCredential Apple credentials received on the client after user signs in
      */
-    @PostMapping("/login/google")
+    @PostMapping(LOGIN_GOOGLE_PATH)
     public SignInWithProviderResponse signInWithGoogle(@RequestBody GoogleIdCredentials googleIdCredential) {
         // add code instead of placeholder below for removing IDE complains
         User user = new User();
