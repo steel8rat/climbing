@@ -1,5 +1,5 @@
 plugins {
-    id 'org.springframework.boot' version '2.3.0.RELEASE'
+    id "org.springframework.boot" version "2.5.0"
     id 'io.spring.dependency-management' version '1.0.9.RELEASE'
     id 'java'
 }
@@ -27,7 +27,7 @@ dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-security'
     implementation 'org.springframework.boot:spring-boot-starter-web'
 
-    implementation 'org.openpnp:opencv:4.3.0-2'
+    implementation 'org.openpnp:opencv:4.5.1-2'
     implementation 'com.amazonaws:aws-java-sdk-s3:1.11.804'
     implementation 'org.apache.commons:commons-text:1.8'
     implementation 'com.google.code.gson:gson:2.8.6'
