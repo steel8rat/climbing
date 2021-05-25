@@ -39,15 +39,12 @@ jobs:
         working-directory: ${{ env.workingDirectory }}
         run: ./gradlew build
 
-      - name: Upload artifacts
-        uses: actions/upload-artifact@v2
-        with:
-          path: apps/auth/build/libs/
+      - name: Login to DockerHub Registry
+        run: echo ${{ secrets.DOCKERHUB_PASSWORD }} | docker login -u ${{ secrets.DOCKERHUB_USERNAME }} --password-stdin
 
-      - name: Remove old artifacts
-        uses: c-hive/gha-remove-artifacts@v1
-        with:
-          age: '1 hour'
+      - name: Downloaded files
+        run: ls -R
+        working-directory: apps/auth/build/libs
 
       - name: Slack notification
         env:
