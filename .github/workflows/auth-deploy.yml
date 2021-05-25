@@ -1,16 +1,17 @@
-name: Microservices / Auth deploy
+name: Apps / Auth Build
 
 on:
   workflow_dispatch: {}
   push:
     branches:
-      - master
+      - test
 
     paths:
       - 'apps/auth'
       - '.github/workflows/auth-deploy.yml'
 jobs:
-  authBuildAndDeploy:
+  auth_build_and_deploy:
+    name: Build Auth App
     runs-on: ubuntu-latest
     env:
       workingDirectory: ./apps/auth
@@ -45,3 +46,18 @@ jobs:
         uses: actions/upload-artifact@v2
         with:
           path: build/libs/
+
+      - name: Remove old artifacts
+        uses: c-hive/gha-remove-artifacts@v1
+        with:
+          age: '1 hour'
+
+      - name: Slack notification
+        env:
+          SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK }}
+          SLACK_USERNAME: github # Optional. (defaults to webhook app)
+          SLACK_CHANNEL: routesetter # Optional. (defaults to webhook)
+          SLACK_AVATAR: https://cdn.routesetter.app/avatar/av0.jpg # Optional. can be (repository, sender, an URL) (defaults to webhook app avatar)
+        uses: Ilshidur/action-slack@master
+        with:
+          args: 'Auth App has been built'
