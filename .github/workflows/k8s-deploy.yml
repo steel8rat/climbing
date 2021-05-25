@@ -7,7 +7,7 @@ on:
   push:
     # Publish `master` as Docker `latest` image.
     branches:
-      - master
+      - test
 
 env:
   JDK_IMAGE: steel8rat/openjdk8

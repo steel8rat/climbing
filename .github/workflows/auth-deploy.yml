@@ -4,7 +4,7 @@ on:
   workflow_dispatch: {}
   push:
     branches:
-      - test
+      - master
 
     paths:
       - 'apps/auth'
