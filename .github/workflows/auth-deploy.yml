@@ -9,6 +9,10 @@ on:
     paths:
       - 'apps/auth'
       - '.github/workflows/auth-deploy.yml'
+env:
+  IMAGE_NAME: steel8rat/auth
+  IMAGE_TAG: ${{ github.sha }} # take commit sha as a image tag
+
 jobs:
   auth_build_and_deploy:
     name: Build Auth App
@@ -47,7 +51,7 @@ jobs:
         working-directory: apps/auth/build/libs
 
       - name: Build Docker image
-        run: docker build --build-arg JAR_FILE=apps/auth/build/libs/*.jar --file apps/auth/Dockerfile --tag $JDK_IMAGE:$IMAGE_TAG .
+        run: docker build --build-arg JAR_FILE=apps/auth/build/libs/*.jar --file apps/auth/Dockerfile --tag $IMAGE_NAME:$IMAGE_TAG .
 
       - name: Push image to Dockerhub
         run: docker push $JDK_IMAGE:$IMAGE_TAG
