@@ -42,9 +42,15 @@ jobs:
       - name: Login to DockerHub Registry
         run: echo ${{ secrets.DOCKERHUB_ACCESS_TOKEN }} | docker login -u ${{ secrets.DOCKERHUB_USERNAME }} --password-stdin
 
-      - name: Downloaded files
+      - name: Artifacts
         run: ls -R
         working-directory: apps/auth/build/libs
+
+      - name: Build Docker image
+        run: docker build --build-arg JAR_FILE=apps/auth/build/libs/*.jar --file apps/auth/Dockerfile --tag $JDK_IMAGE:$IMAGE_TAG .
+
+      - name: Push image to Dockerhub
+        run: docker push $JDK_IMAGE:$IMAGE_TAG
 
       - name: Slack notification
         env:
