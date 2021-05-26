@@ -54,7 +54,7 @@ jobs:
         run: docker build --build-arg JAR_FILE=apps/auth/build/libs/*-SNAPSHOT.jar --file apps/auth/Dockerfile --tag $IMAGE_NAME:$IMAGE_TAG .
 
       - name: Push image to Dockerhub
-        run: docker push $JDK_IMAGE:$IMAGE_TAG
+        run: docker push $IMAGE_NAME:$IMAGE_TAG
 
       - name: Slack notification
         env:
@@ -65,3 +65,8 @@ jobs:
         uses: Ilshidur/action-slack@master
         with:
           args: 'Auth App has been built'
+
+      - name: Remove old artifacts
+        uses: c-hive/gha-remove-artifacts@v1
+        with:
+          age: '1 hour'
