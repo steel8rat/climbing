@@ -1,4 +1,4 @@
-name: Apps / Auth Build
+name: Apps / Auth build and deploy
 
 on:
   workflow_dispatch: {}
