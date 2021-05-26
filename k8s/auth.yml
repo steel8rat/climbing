@@ -1,9 +1,9 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: api-server
+  name: auth
   labels:
-    app: api-server
+    app: auth
 spec:
   replicas: 1
   selector:
@@ -12,11 +12,11 @@ spec:
   template:
     metadata:
       labels:
-        app: api-server
+        app: auth
     spec:
       containers:
-        - name: api-server
-          image: steel8rat/openjdk8:<TAG>
+        - name: auth
+          image: <IMAGE_NAME>
           ports:
             - containerPort: 8080
               protocol: TCP
@@ -24,13 +24,13 @@ spec:
 apiVersion: v1
 kind: Service
 metadata:
-  name: api-server
+  name: auth
   labels:
-    app: api-server
+    app: auth
 spec:
   ports:
     - port: 8080
       targetPort: 8080
       protocol: TCP
   selector:
-    app: api-server
+    app: auth

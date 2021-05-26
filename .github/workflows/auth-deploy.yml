@@ -12,6 +12,7 @@ on:
 env:
   IMAGE_NAME: steel8rat/auth
   IMAGE_TAG: ${{ github.sha }} # take commit sha as a image tag
+  K8S_CLUSTER_NAME: k8s-dev
 
 jobs:
   auth_build_and_deploy:
@@ -56,6 +57,23 @@ jobs:
       - name: Push image to Dockerhub
         run: docker push $IMAGE_NAME:$IMAGE_TAG
 
+      - name: Update api-server deployment file
+        run: sed -i 's|<IMAGE_NAME>|'${IMAGE_NAME}:${IMAGE_TAG}'|' $GITHUB_WORKSPACE/k8s/auth.yml
+
+      - name: Install doctl
+        uses: digitalocean/action-doctl@v2
+        with:
+          token: ${{ secrets.DIGITALOCEAN_ACCESS_TOKEN }}
+
+      - name: Save DigitalOcean kubeconfig
+        run: doctl kubernetes cluster kubeconfig save $K8S_CLUSTER_NAME
+
+      - name: Deploy to DigitalOcean Kubernetes
+        run: kubectl apply -f $GITHUB_WORKSPACE/k8s
+
+      - name: Verify deployments
+        run: kubectl get deployments --output name | xargs -n1 kubectl rollout status
+
       - name: Slack notification
         env:
           SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK }}
@@ -64,7 +82,7 @@ jobs:
           SLACK_AVATAR: https://cdn.routesetter.app/avatar/av0.jpg # Optional. can be (repository, sender, an URL) (defaults to webhook app avatar)
         uses: Ilshidur/action-slack@master
         with:
-          args: 'Auth App has been built'
+          args: Auth App is deployed to $K8S_CLUSTER_NAME
 
       - name: Remove old artifacts
         uses: c-hive/gha-remove-artifacts@v1
