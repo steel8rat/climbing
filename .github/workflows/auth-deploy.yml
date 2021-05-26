@@ -51,7 +51,7 @@ jobs:
         working-directory: apps/auth/build/libs
 
       - name: Build Docker image
-        run: docker build --build-arg JAR_FILE=apps/auth/build/libs/*.jar --file apps/auth/Dockerfile --tag $IMAGE_NAME:$IMAGE_TAG .
+        run: docker build --build-arg JAR_FILE=apps/auth/build/libs/*-SNAPSHOT.jar --file apps/auth/Dockerfile --tag $IMAGE_NAME:$IMAGE_TAG .
 
       - name: Push image to Dockerhub
         run: docker push $JDK_IMAGE:$IMAGE_TAG
