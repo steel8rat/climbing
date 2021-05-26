@@ -12,7 +12,7 @@ on:
 env:
   IMAGE_NAME: steel8rat/auth
   IMAGE_TAG: ${{ github.sha }} # take commit sha as a image tag
-  K8S_CLUSTER_NAME: k8s-dev
+  K8S_CLUSTER_NAME: k8s-routesetter-sfo-3
 
 jobs:
   auth_build_and_deploy:
