@@ -9,7 +9,7 @@ metadata:
     service.beta.kubernetes.io/do-loadbalancer-http2-ports: "443"
     # To get certificate id run `doctl compute certificate list` in terminal
     service.beta.kubernetes.io/do-loadbalancer-certificate-id: "5a0ebbbf-ac79-437e-ba48-c4b21a722fa8"
-    service.beta.kubernetes.io/do-loadbalancer-healthcheck-path: "/"
+    service.beta.kubernetes.io/do-loadbalancer-healthcheck-path: "auth/actuator/health"
 
 spec:
   type: LoadBalancer
