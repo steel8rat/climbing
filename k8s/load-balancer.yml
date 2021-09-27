@@ -5,11 +5,13 @@ metadata:
   # DO NOT MODIFY LOAD BALANCER PARAMETERS IN DIGITAL OCEAN CONSOLE, USE BELOW ANNOTATIONS
   annotations:
     service.beta.kubernetes.io/do-loadbalancer-name: "k8s-climbing-dev-lb"
+    service.beta.kubernetes.io/do-loadbalancer-size-slug: "lb-small"
     service.beta.kubernetes.io/do-loadbalancer-protocol: "http2"
     service.beta.kubernetes.io/do-loadbalancer-http2-ports: "443"
     # To get certificate id run `doctl compute certificate list` in terminal
     service.beta.kubernetes.io/do-loadbalancer-certificate-id: "5a0ebbbf-ac79-437e-ba48-c4b21a722fa8"
     service.beta.kubernetes.io/do-loadbalancer-healthcheck-path: "auth/actuator/health"
+    service.beta.kubernetes.io/do-loadbalancer-redirect-http-to-https: "true"
 
 spec:
   type: LoadBalancer
@@ -19,4 +21,4 @@ spec:
     - name: http2
       protocol: TCP
       port: 443
-      targetPort: 8080
+      targetPort: 80
