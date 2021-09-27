@@ -1,4 +1,4 @@
-FROM openjdk:16
+FROM openjdk:11
 #TODO add user for runngin spring boot
 ARG JAR_FILE=target/*.jar
 COPY ${JAR_FILE} app.jar
