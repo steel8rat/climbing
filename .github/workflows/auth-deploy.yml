@@ -67,7 +67,7 @@ jobs:
           token: ${{ secrets.DIGITALOCEAN_ACCESS_TOKEN }}
 
       - name: Save DigitalOcean kubeconfig
-        run: doctl kubernetes cluster kubeconfig save $K8S_CLUSTER_NAME
+        run: doctl kubernetes cluster kubeconfig save ${{ env.K8S_CLUSTER_NAME }}
 
       - name: Deploy to DigitalOcean Kubernetes
         run: kubectl apply -f $GITHUB_WORKSPACE/k8s
@@ -83,7 +83,7 @@ jobs:
           SLACK_AVATAR: repository # Optional. can be (repository, sender, an URL) (defaults to webhook app avatar)
         uses: Ilshidur/action-slack@2.0.2
         with:
-          args: Auth is deployed to ${{ K8S_CLUSTER_NAME }}
+          args: Auth is deployed to ${{ env.K8S_CLUSTER_NAME }}
 
       - name: Remove old artifacts
         uses: c-hive/gha-remove-artifacts@v1
