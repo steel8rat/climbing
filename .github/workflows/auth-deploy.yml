@@ -11,7 +11,7 @@ on:
       - '.github/workflows/auth-deploy.yml'
 env:
   IMAGE_NAME: steel8rat/auth
-  IMAGE_TAG: ${{ github.sha }} # take commit sha as a image tag
+  IMAGE_TAG: ${{ github.sha }} # take commit sha as an image tag
   K8S_CLUSTER_NAME: k8s-routesetter-sfo-3
 
 jobs:
